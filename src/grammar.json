@@ -10,7 +10,7 @@
   "extras": [
     {
       "type": "PATTERN",
-      "value": "\\s"
+      "vlue": "\\s"
     }
   ],
   "conflicts": [],

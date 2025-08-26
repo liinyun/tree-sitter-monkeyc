@@ -10,8 +10,15 @@
 module.exports = grammar({
   name: "monkeyc",
 
+  extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/u],
+
   rules: {
-    // TODO: add the actual grammar rules
-    source_file: $ => "hello"
-  }
+    comment: (_) =>
+      token(
+        choice(
+          seq("//", /[^\r\n\u2028\u2029]*/),
+          seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"),
+        ),
+      ),
+  },
 });
