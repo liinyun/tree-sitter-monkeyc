@@ -1,0 +1,43 @@
+============================================
+Imports
+============================================
+
+import Toybox.Lang;
+
+------
+
+(program
+  (import_statement
+    (dotted_name
+      (identifier)
+      (identifier)
+      )))
+
+
+
+============================================
+Using statement
+============================================
+
+using Toybox.WatchUi;
+using Toybox.ActivityRecording as ActivityRecording;
+
+-----
+
+(program
+  (using_statement
+    (dotted_name
+      (identifier)
+      (identifier)
+    )
+  )
+  (using_statement
+    (dotted_name
+      (identifier)
+      (identifier)
+    )
+    (identifier)
+  )
+)
+
+
