@@ -29,32 +29,27 @@ module.exports = grammar({
         $.import_statement,
         $.using_statement,
         // I don't think this useful
-        $.expression_statement,
-        $.debugger_statement,
+        // $.expression_statement,
         $.declaration,
         $.statement_block,
 
         $.if_statement,
         $.switch_statement,
         $.for_statement,
-        $.for_in_statement,
         $.while_statement,
         $.do_statement,
         $.try_statement,
-        $.with_statement,
 
         $.break_statement,
         $.continue_statement,
         $.return_statement,
         $.throw_statement,
-        $.empty_statement,
-        $.labeled_statement,
       ),
 
     declaration: ($) =>
       choice(
         $.function_declaration,
-        $.generator_function_declaration,
+        // $.generator_function_declaration,
         $.class_declaration,
         $.variable_declaration,
       ),
@@ -145,39 +140,11 @@ module.exports = grammar({
       seq(
         "for",
         "(",
-        choice(
-          field("initializer", $.variable_declaration),
-          seq(field("initializer", $._expressions), ";"),
-          field("initializer", $.empty_statement),
-        ),
-        field("condition", choice(seq($._expressions, ";"), $.empty_statement)),
-        field("increment", optional($._expressions)),
+        field("initializer", $.variable_declaration),
+        field("condition", seq($.expressions, ";")),
+        field("increment", $.expressions),
         ")",
         field("body", $.statement),
-      ),
-
-    for_in_statement: ($) =>
-      seq("for", optional("await"), $._for_header, field("body", $.statement)),
-
-    _for_header: ($) =>
-      seq(
-        "(",
-        choice(
-          field("left", choice($._lhs_expression, $.parenthesized_expression)),
-          seq(
-            field("kind", "var"),
-            field("left", choice($.identifier, $._destructuring_pattern)),
-            optional($._initializer),
-          ),
-          seq(
-            field("kind", choice("let", "const")),
-            field("left", choice($.identifier, $._destructuring_pattern)),
-            optional($._automatic_semicolon),
-          ),
-        ),
-        field("operator", choice("in", "of")),
-        field("right", $._expressions),
-        ")",
       ),
 
     while_statement: ($) =>
@@ -194,63 +161,26 @@ module.exports = grammar({
           field("body", $.statement),
           "while",
           field("condition", $.parenthesized_expression),
-          optional($._semicolon),
+          ";",
         ),
       ),
 
+    // I don't find many people use this statement, so I will make it simple
+    // I force everyone to write catch_clause and finally_clause after try
     try_statement: ($) =>
       seq(
         "try",
         field("body", $.statement_block),
-        optional(field("handler", $.catch_clause)),
-        optional(field("finalizer", $.finally_clause)),
+        field("handler", $.catch_clause),
+        field("finalizer", $.finally_clause),
       ),
 
-    with_statement: ($) =>
-      seq(
-        "with",
-        field("object", $.parenthesized_expression),
-        field("body", $.statement),
-      ),
-
-    break_statement: ($) =>
-      seq(
-        "break",
-        field("label", optional(alias($.identifier, $.statement_identifier))),
-        $._semicolon,
-      ),
-
-    continue_statement: ($) =>
-      seq(
-        "continue",
-        field("label", optional(alias($.identifier, $.statement_identifier))),
-        $._semicolon,
-      ),
-
-    debugger_statement: ($) => seq("debugger", $._semicolon),
-
+    // these 4 will be used as $statement in for and other place
+    break_statement: ($) => seq("break", ";"),
+    continue_statement: ($) => seq("continue", ";"),
     return_statement: ($) =>
-      seq("return", optional($._expressions), $._semicolon),
-
-    throw_statement: ($) => seq("throw", $._expressions, $._semicolon),
-
-    empty_statement: (_) => ";",
-
-    labeled_statement: ($) =>
-      prec.dynamic(
-        -1,
-        seq(
-          field(
-            "label",
-            alias(
-              choice($.identifier, $._reserved_identifier),
-              $.statement_identifier,
-            ),
-          ),
-          ":",
-          field("body", $.statement),
-        ),
-      ),
+      seq("return", optional($.expressions), $._semicolon),
+    throw_statement: ($) => seq("throw", $.expressions, ";"),
 
     //
     // Statement components
@@ -281,7 +211,7 @@ module.exports = grammar({
 
     parenthesized_expression: ($) => seq("(", $.expressions, ")"),
     //
-    // Expressions
+    // Expressions      expressions doesn't have ";" appended
     //
 
     expression: ($) =>
@@ -290,7 +220,6 @@ module.exports = grammar({
         $._jsx_element,
         $.assignment_expression,
         $.augmented_assignment_expression,
-        $.await_expression,
         $.unary_expression,
         $.binary_expression,
         $.ternary_expression,
@@ -300,7 +229,6 @@ module.exports = grammar({
 
     primary_expression: ($) =>
       choice(
-        $.subscript_expression,
         $.member_expression,
         $.parenthesized_expression,
         $._identifier,
@@ -309,87 +237,21 @@ module.exports = grammar({
         $.super,
         $.number,
         $.string,
-        $.template_string,
-        $.regex,
         $.true,
         $.false,
         $.null,
-        $.object,
         $.array,
-        $.function_expression,
-        $.arrow_function,
-        $.generator_function,
-        $.class,
         $.meta_property,
         $.call_expression,
       ),
     // it works just like symbols
-    object: ($) =>
-      prec(
-        "object",
-        seq(
-          "{",
-          commaSep(
-            optional(
-              choice(
-                $.pair,
-                $.spread_element,
-                $.method_definition,
-                alias(
-                  choice($.identifier, $._reserved_identifier),
-                  $.shorthand_property_identifier,
-                ),
-              ),
-            ),
-          ),
-          "}",
-        ),
-      ),
-
-    object_pattern: ($) =>
-      prec(
-        "object",
-        seq(
-          "{",
-          commaSep(
-            optional(
-              choice(
-                $.pair_pattern,
-                $.rest_pattern,
-                $.object_assignment_pattern,
-                alias(
-                  choice($.identifier, $._reserved_identifier),
-                  $.shorthand_property_identifier_pattern,
-                ),
-              ),
-            ),
-          ),
-          "}",
-        ),
-      ),
-
     assignment_pattern: ($) =>
       seq(field("left", $.pattern), "=", field("right", $.expression)),
-
-    object_assignment_pattern: ($) =>
-      seq(
-        field(
-          "left",
-          choice(
-            alias(
-              choice($._reserved_identifier, $.identifier),
-              $.shorthand_property_identifier_pattern,
-            ),
-            $._destructuring_pattern,
-          ),
-        ),
-        "=",
-        field("right", $.expression),
-      ),
 
     array: ($) =>
       seq("[", commaSep(optional(choice($.expression, $.spread_element))), "]"),
 
+    // TODO: I don't understand this pattern much, actually, it's the $._lhs_expression part I don't understand
     array_pattern: ($) =>
       seq(
         "[",
@@ -403,147 +265,43 @@ module.exports = grammar({
     html_character_reference: (_) =>
       /&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});/,
 
-    nested_identifier: ($) =>
-      prec(
-        "member",
-        seq(
-          field(
-            "object",
-            choice(
-              $.identifier,
-              alias($.nested_identifier, $.member_expression),
-            ),
-          ),
-          ".",
-          field("property", alias($.identifier, $.property_identifier)),
-        ),
-      ),
-
-    class: ($) =>
-      prec(
-        "literal",
-        seq(
-          repeat(field("decorator", $.decorator)),
-          "class",
-          field("name", optional($.identifier)),
-          optional($.class_heritage),
-          field("body", $.class_body),
-        ),
-      ),
-
     class_declaration: ($) =>
       prec(
         "declaration",
         seq(
-          repeat(field("decorator", $.decorator)),
           "class",
           field("name", $.identifier),
           optional($.class_heritage),
           field("body", $.class_body),
-          optional($._automatic_semicolon),
         ),
       ),
 
     class_heritage: ($) => seq("extends", $.expression),
 
-    function_expression: ($) =>
-      prec(
-        "literal",
-        seq(
-          optional("async"),
-          "function",
-          field("name", optional($.identifier)),
-          $._call_signature,
-          field("body", $.statement_block),
-        ),
-      ),
-
     function_declaration: ($) =>
       prec.right(
         "declaration",
         seq(
-          optional("async"),
           "function",
           field("name", $.identifier),
           $._call_signature,
           field("body", $.statement_block),
-          optional($._automatic_semicolon),
         ),
-      ),
-
-    generator_function: ($) =>
-      prec(
-        "literal",
-        seq(
-          optional("async"),
-          "function",
-          "*",
-          field("name", optional($.identifier)),
-          $._call_signature,
-          field("body", $.statement_block),
-        ),
-      ),
-
-    generator_function_declaration: ($) =>
-      prec.right(
-        "declaration",
-        seq(
-          optional("async"),
-          "function",
-          "*",
-          field("name", $.identifier),
-          $._call_signature,
-          field("body", $.statement_block),
-          optional($._automatic_semicolon),
-        ),
-      ),
-
-    arrow_function: ($) =>
-      seq(
-        optional("async"),
-        choice(
-          field(
-            "parameter",
-            choice(alias($._reserved_identifier, $.identifier), $.identifier),
-          ),
-          $._call_signature,
-        ),
-        "=>",
-        field("body", choice($.expression, $.statement_block)),
       ),
 
     // Override
     _call_signature: ($) => field("parameters", $.formal_parameters),
-    _formal_parameter: ($) => choice($.pattern, $.assignment_pattern),
 
+    // TODO: monkeyc doesn't have it, but it is used to much, so I will clean it one by one
     optional_chain: (_) => "?.",
 
     call_expression: ($) =>
-      choice(
-        prec(
-          "call",
-          seq(
-            field("function", choice($.expression, $.import)),
-            field("arguments", $.arguments),
-          ),
-        ),
-        prec(
-          "template_call",
-          seq(
-            field("function", choice($.primary_expression, $.new_expression)),
-            field("arguments", $.template_string),
-          ),
-        ),
-        prec(
-          "member",
-          seq(
-            field("function", $.primary_expression),
-            field("optional_chain", $.optional_chain),
-            field("arguments", $.arguments),
-          ),
-        ),
+      prec(
+        "call",
+        seq(field("function", $.identifier), field("arguments", $.arguments)),
       ),
 
+    // NOTE: I do not fully get it through, but this does useful in monkeyc
     new_expression: ($) =>
       prec.right(
         "new",
@@ -554,13 +312,12 @@ module.exports = grammar({
         ),
       ),
 
-    await_expression: ($) => prec("unary_void", seq("await", $.expression)),
-
+    // NOTE: I do not fully get it through, but this does useful in monkeyc too
     member_expression: ($) =>
       prec(
         "member",
         seq(
-          field("object", choice($.expression, $.primary_expression, $.import)),
+          field("object", choice($.expression, $.primary_expression)),
           choice(".", field("optional_chain", $.optional_chain)),
           field(
             "property",
@@ -572,22 +329,9 @@ module.exports = grammar({
         ),
       ),
 
-    subscript_expression: ($) =>
-      prec.right(
-        "member",
-        seq(
-          field("object", choice($.expression, $.primary_expression)),
-          optional(field("optional_chain", $.optional_chain)),
-          "[",
-          field("index", $._expressions),
-          "]",
-        ),
-      ),
-
     _lhs_expression: ($) =>
       choice(
         $.member_expression,
-        $.subscript_expression,
         $._identifier,
         alias($._reserved_identifier, $.identifier),
         $._destructuring_pattern,
@@ -606,7 +350,6 @@ module.exports = grammar({
     _augmented_assignment_lhs: ($) =>
       choice(
         $.member_expression,
-        $.subscript_expression,
         alias($._reserved_identifier, $.identifier),
         $.identifier,
         $.parenthesized_expression,
@@ -643,7 +386,7 @@ module.exports = grammar({
 
     _initializer: ($) => seq("=", field("value", $.expression)),
 
-    _destructuring_pattern: ($) => choice($.object_pattern, $.array_pattern),
+    _destructuring_pattern: ($) => $.array_pattern,
 
     spread_element: ($) => seq("...", $.expression),
 
@@ -779,55 +522,6 @@ module.exports = grammar({
         ),
       ),
 
-    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
-    template_string: ($) =>
-      seq(
-        "`",
-        repeat(
-          choice(
-            alias($._template_chars, $.string_fragment),
-            $.escape_sequence,
-            $.template_substitution,
-          ),
-        ),
-        "`",
-      ),
-
-    template_substitution: ($) => seq("${", $._expressions, "}"),
-
-    regex: ($) =>
-      seq(
-        "/",
-        field("pattern", $.regex_pattern),
-        token.immediate(prec(1, "/")),
-        optional(field("flags", $.regex_flags)),
-      ),
-
-    regex_pattern: (_) =>
-      token.immediate(
-        prec(
-          -1,
-          repeat1(
-            choice(
-              seq(
-                "[",
-                repeat(
-                  choice(
-                    seq("\\", /./), // escaped character
-                    /[^\]\n\\]/, // any character besides ']' or '\n'
-                  ),
-                ),
-                "]",
-              ), // square-bracket-delimited character class
-              seq("\\", /./), // escaped character
-              /[^/\\\[\n]/, // any character besides '[', '\', '/', '\n'
-            ),
-          ),
-        ),
-      ),
-
-    regex_flags: (_) => token.immediate(/[a-z]+/),
-
     number: (_) => {
       const hexLiteral = seq(choice("0x", "0X"), /[\da-fA-F](_?[\da-fA-F])*/);
 
@@ -905,49 +599,7 @@ module.exports = grammar({
     // Expression components
     //
 
-    arguments: ($) =>
-      seq("(", commaSep(optional(choice($.expression, $.spread_element))), ")"),
-
-    decorator: ($) =>
-      seq(
-        "@",
-        choice(
-          $.identifier,
-          alias($.decorator_member_expression, $.member_expression),
-          alias($.decorator_call_expression, $.call_expression),
-        ),
-      ),
-
-    decorator_member_expression: ($) =>
-      prec(
-        "member",
-        seq(
-          field(
-            "object",
-            choice(
-              $.identifier,
-              alias($.decorator_member_expression, $.member_expression),
-            ),
-          ),
-          ".",
-          field("property", alias($.identifier, $.property_identifier)),
-        ),
-      ),
-
-    decorator_call_expression: ($) =>
-      prec(
-        "call",
-        seq(
-          field(
-            "function",
-            choice(
-              $.identifier,
-              alias($.decorator_member_expression, $.member_expression),
-            ),
-          ),
-          field("arguments", $.arguments),
-        ),
-      ),
+    arguments: ($) => seq("(", commaSep(optional($.identifier)), ")"),
 
     class_body: ($) =>
       seq(
@@ -965,18 +617,12 @@ module.exports = grammar({
 
     field_definition: ($) =>
       seq(
-        repeat(field("decorator", $.decorator)),
         optional("static"),
         field("property", $._property_name),
         optional($._initializer),
       ),
 
-    formal_parameters: ($) =>
-      seq(
-        "(",
-        optional(seq(commaSep1($._formal_parameter), optional(","))),
-        ")",
-      ),
+    formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),
 
     class_static_block: ($) =>
       seq(
@@ -994,14 +640,12 @@ module.exports = grammar({
 
     method_definition: ($) =>
       seq(
-        repeat(field("decorator", $.decorator)),
         optional(
           choice(
             "static",
             alias(token(seq("static", /\s+/, "get", /\s*\n/)), "static get"),
           ),
         ),
-        optional("async"),
         optional(choice("get", "set", "*")),
         field("name", $._property_name),
         field("parameters", $.formal_parameters),
