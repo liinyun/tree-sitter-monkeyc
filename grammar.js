@@ -292,9 +292,6 @@ module.exports = grammar({
     // Override
     _call_signature: ($) => field("parameters", $.formal_parameters),
 
-    // TODO: monkeyc doesn't have it, but it is used to much, so I will clean it one by one
-    optional_chain: (_) => "?.",
-
     call_expression: ($) =>
       prec(
         "call",
@@ -312,13 +309,13 @@ module.exports = grammar({
         ),
       ),
 
-    // NOTE: I do not fully get it through, but this does useful in monkeyc too
+    // I don't understand why choice
     member_expression: ($) =>
       prec(
         "member",
         seq(
           field("object", choice($.expression, $.primary_expression)),
-          choice(".", field("optional_chain", $.optional_chain)),
+          ".",
           field(
             "property",
             choice(
@@ -334,7 +331,7 @@ module.exports = grammar({
         $.member_expression,
         $._identifier,
         alias($._reserved_identifier, $.identifier),
-        $._destructuring_pattern,
+        // $._destructuring_pattern,
       ),
 
     assignment_expression: ($) =>
@@ -372,12 +369,7 @@ module.exports = grammar({
               "&=",
               "|=",
               ">>=",
-              ">>>=",
               "<<=",
-              "**=",
-              "&&=",
-              "||=",
-              "??=",
             ),
           ),
           field("right", $.expression),
@@ -386,7 +378,7 @@ module.exports = grammar({
 
     _initializer: ($) => seq("=", field("value", $.expression)),
 
-    _destructuring_pattern: ($) => $.array_pattern,
+    // _destructuring_pattern: ($) => $.array_pattern,
 
     spread_element: ($) => seq("...", $.expression),
 
