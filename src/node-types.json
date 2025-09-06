@@ -214,14 +214,6 @@
         "required": true,
         "types": [
           {
-            "type": "identifier",
-            "named": true
-          },
-          {
-            "type": "member_expression",
-            "named": true
-          },
-          {
             "type": "parenthesized_expression",
             "named": true
           }
@@ -857,7 +849,7 @@
         "required": true,
         "types": [
           {
-            "type": "identifier",
+            "type": "property_identifier",
             "named": true
           }
         ]

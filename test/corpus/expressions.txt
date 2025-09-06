@@ -61,7 +61,7 @@ class StopMenuDelegate {
     (identifier) 
     (class_body
       (method_definition
-        (identifier)
+        (property_identifier)
         (formal_parameters)
         (statement_block 
           (expression_statement

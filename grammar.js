@@ -11,17 +11,11 @@ module.exports = grammar({
   name: "monkeyc",
 
 
-  // externals: $ => [
-  //   $._ternary_qmark,
-  //   // $._automatic_semicolon,
-  // ],
-
   extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/u],
 
   precedences: $ => [
     [
       'member',
-      'template_call',
       'call',
       $.update_expression,
       'unary_void',
@@ -40,20 +34,10 @@ module.exports = grammar({
       'ternary',
     ],
     ['assign', $.primary_expression],
-    ['member', 'template_call', 'new', 'call', $.expression],
     ['declaration', 'literal'],
     [$.primary_expression, $.statement_block, 'object'],
     [$.import_statement, $.import],
   ],
-
-  // conflicts: $ => [
-  //   [$.primary_expression, $._property_name],
-  //   [$.primary_expression, $.method_definition],
-  //   [$.computed_property_name, $.array],
-  //   [$.binary_expression, $._initializer],
-  //   [$.class_static_block, $._property_name],
-  // ],
-
 
 
   word: ($) => $.identifier,
@@ -72,7 +56,6 @@ module.exports = grammar({
       choice(
         $.import_statement,
         $.using_statement,
-        // I don't think this useful
         $.expression_statement,
         $.declaration,
         $.statement_block,
@@ -295,12 +278,6 @@ module.exports = grammar({
     array: ($) =>
       seq("[", commaSep(optional(choice($.expression, $.spread_element))), "]"),
 
-    // An entity can be named, numeric (decimal), or numeric (hexadecimal). The
-    // longest entity name is 29 characters long, and the HTML spec says that
-    // no more will ever be added.
-    html_character_reference: (_) =>
-      /&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});/,
-
     class_declaration: ($) =>
       prec(
         "declaration",
@@ -359,72 +336,18 @@ module.exports = grammar({
         ),
       ),
 
-    _lhs_expression: ($) =>
-      choice(
-        $.member_expression,
-        $.identifier,
-        // $._destructuring_pattern,
-      ),
-
     assignment_expression: ($) =>
       prec.right(
         "assign",
         seq(
-          field("left", choice($.parenthesized_expression, $._lhs_expression)),
+          field("left", $.parenthesized_expression),
           "=",
-          field("right", $.expression),
-        ),
-      ),
-
-    _augmented_assignment_lhs: ($) =>
-      choice(
-        $.member_expression,
-        $.identifier,
-        $.parenthesized_expression,
-      ),
-
-    // I don't understand this part but I will save this part
-    augmented_assignment_expression: ($) =>
-      prec.right(
-        "assign",
-        seq(
-          field("left", $._augmented_assignment_lhs),
-          field(
-            "operator",
-            choice(
-              "+=",
-              "-=",
-              "*=",
-              "/=",
-              "%=",
-              "^=",
-              "&=",
-              "|=",
-              ">>=",
-              "<<=",
-            ),
-          ),
           field("right", $.expression),
         ),
       ),
 
     _initializer: ($) => seq("=", field("value", $.expression)),
 
-    // _destructuring_pattern: ($) => $.array_pattern,
-
-    spread_element: ($) => seq("...", $.expression),
-
-    // ternary_expression: ($) =>
-    //   prec.right(
-    //     "ternary",
-    //     seq(
-    //       field("condition", $.expression),
-    //       alias($._ternary_qmark, "?"),
-    //       field("consequence", $.expression),
-    //       ":",
-    //       field("alternative", $.expression),
-    //     ),
-    //   ),
 
     // 25
     // 21
@@ -480,6 +403,8 @@ module.exports = grammar({
         ),
       ),
 
+    // monkeyc does have this, but I'm not sure if there are difference
+    // between these two. 
     update_expression: ($) =>
       prec.left(
         choice(
@@ -551,12 +476,6 @@ module.exports = grammar({
       );
     },
 
-    // 'undefined' is syntactically a regular identifier in JavaScript.
-    // However, its main use is as the read-only global variable whose
-    // value is [undefined], for which there's no literal representation
-    // unlike 'null'. We gave it its own rule so it's easy to
-    // highlight in text editors and other applications.
-
     this: (_) => "this",
     super: (_) => "super",
     true: (_) => "true",
@@ -587,17 +506,6 @@ module.exports = grammar({
 
     formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),
 
-    class_static_block: ($) =>
-      seq(
-        "static",
-        field("body", $.statement_block),
-      ),
-
-    // This negative dynamic precedence ensures that during error recovery,
-    // unfinished constructs are generally treated as literal expressions,
-    // not patterns.
-
-    rest_pattern: ($) => prec.right(seq("...", $._lhs_expression)),
 
     method_definition: ($) =>
       seq(
@@ -605,13 +513,10 @@ module.exports = grammar({
           "static",
         ),
         "function",
-        field("name", $.identifier),
+        field("name", $._property_name),
         field("parameters", $.formal_parameters),
         field("body", $.statement_block),
       ),
-
-    pair: ($) =>
-      seq(field("key", $._property_name), ":", field("value", $.expression)),
 
     _property_name: ($) =>
       alias(

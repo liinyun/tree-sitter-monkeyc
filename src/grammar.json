@@ -950,10 +950,6 @@
         }
       ]
     },
-    "html_character_reference": {
-      "type": "PATTERN",
-      "value": "&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});"
-    },
     "class_declaration": {
       "type": "PREC",
       "value": "declaration",
@@ -1167,19 +1163,6 @@
         ]
       }
     },
-    "_lhs_expression": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "member_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "identifier"
-        }
-      ]
-    },
     "assignment_expression": {
       "type": "PREC_RIGHT",
       "value": "assign",
@@ -1190,17 +1173,8 @@
             "type": "FIELD",
             "name": "left",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "parenthesized_expression"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_lhs_expression"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "parenthesized_expression"
             }
           },
           {
@@ -2585,23 +2559,6 @@
         }
       ]
     },
-    "rest_pattern": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "STRING",
-            "value": "..."
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_lhs_expression"
-          }
-        ]
-      }
-    },
     "method_definition": {
       "type": "SEQ",
       "members": [
@@ -2626,7 +2583,7 @@
           "name": "name",
           "content": {
             "type": "SYMBOL",
-            "name": "identifier"
+            "name": "_property_name"
           }
         },
         {
@@ -2643,31 +2600,6 @@
           "content": {
             "type": "SYMBOL",
             "name": "statement_block"
-          }
-        }
-      ]
-    },
-    "pair": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "FIELD",
-          "name": "key",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_property_name"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": ":"
-        },
-        {
-          "type": "FIELD",
-          "name": "value",
-          "content": {
-            "type": "SYMBOL",
-            "name": "expression"
           }
         }
       ]
