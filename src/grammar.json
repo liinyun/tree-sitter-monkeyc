@@ -813,10 +813,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "ternary_expression"
-        },
-        {
-          "type": "SYMBOL",
           "name": "update_expression"
         },
         {
@@ -1342,52 +1338,6 @@
           "name": "expression"
         }
       ]
-    },
-    "ternary_expression": {
-      "type": "PREC_RIGHT",
-      "value": "ternary",
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "FIELD",
-            "name": "condition",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
-          },
-          {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_ternary_qmark"
-            },
-            "named": false,
-            "value": "?"
-          },
-          {
-            "type": "FIELD",
-            "name": "consequence",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
-          },
-          {
-            "type": "STRING",
-            "value": ":"
-          },
-          {
-            "type": "FIELD",
-            "name": "alternative",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
-          }
-        ]
-      }
     },
     "binary_expression": {
       "type": "CHOICE",
@@ -2516,53 +2466,15 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "FIELD",
-                    "name": "member",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "method_definition"
-                    }
-                  },
-                  {
-                    "type": "STRING",
-                    "value": ";"
-                  }
-                ]
-              },
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "FIELD",
-                    "name": "member",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "field_definition"
-                    }
-                  },
-                  {
-                    "type": "STRING",
-                    "value": ";"
-                  }
-                ]
-              },
               {
                 "type": "FIELD",
                 "name": "member",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "class_static_block"
+                  "name": "method_definition"
                 }
-              },
-              {
-                "type": "STRING",
-                "value": ";"
               }
             ]
           }
@@ -2706,11 +2618,15 @@
           ]
         },
         {
+          "type": "STRING",
+          "value": "function"
+        },
+        {
           "type": "FIELD",
           "name": "name",
           "content": {
             "type": "SYMBOL",
-            "name": "_property_name"
+            "name": "identifier"
           }
         },
         {
@@ -2920,12 +2836,7 @@
       }
     ]
   ],
-  "externals": [
-    {
-      "type": "SYMBOL",
-      "name": "_ternary_qmark"
-    }
-  ],
+  "externals": [],
   "inline": [],
   "supertypes": [
     "statement",

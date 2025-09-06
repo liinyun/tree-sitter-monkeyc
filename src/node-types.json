@@ -42,10 +42,6 @@
         "named": true
       },
       {
-        "type": "ternary_expression",
-        "named": true
-      },
-      {
         "type": "unary_expression",
         "named": true
       },
@@ -505,14 +501,6 @@
         "required": false,
         "types": [
           {
-            "type": "class_static_block",
-            "named": true
-          },
-          {
-            "type": "field_definition",
-            "named": true
-          },
-          {
             "type": "method_definition",
             "named": true
           }
@@ -569,22 +557,6 @@
           "named": true
         }
       ]
-    }
-  },
-  {
-    "type": "class_static_block",
-    "named": true,
-    "fields": {
-      "body": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "statement_block",
-            "named": true
-          }
-        ]
-      }
     }
   },
   {
@@ -670,32 +642,6 @@
           "named": true
         }
       ]
-    }
-  },
-  {
-    "type": "field_definition",
-    "named": true,
-    "fields": {
-      "property": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "property_identifier",
-            "named": true
-          }
-        ]
-      },
-      "value": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      }
     }
   },
   {
@@ -911,7 +857,7 @@
         "required": true,
         "types": [
           {
-            "type": "property_identifier",
+            "type": "identifier",
             "named": true
           }
         ]
@@ -1134,42 +1080,6 @@
         "types": [
           {
             "type": "parenthesized_expression",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "ternary_expression",
-    "named": true,
-    "fields": {
-      "alternative": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
-      "condition": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
-      "consequence": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "expression",
             "named": true
           }
         ]
@@ -1519,10 +1429,6 @@
   },
   {
     "type": ">>=",
-    "named": false
-  },
-  {
-    "type": "?",
     "named": false
   },
   {

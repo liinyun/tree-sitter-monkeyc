@@ -11,11 +11,10 @@ module.exports = grammar({
   name: "monkeyc",
 
 
-  externals: $ => [
-    $._ternary_qmark,
-
-    // $._automatic_semicolon,
-  ],
+  // externals: $ => [
+  //   $._ternary_qmark,
+  //   // $._automatic_semicolon,
+  // ],
 
   extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/u],
 
@@ -274,7 +273,7 @@ module.exports = grammar({
         $.augmented_assignment_expression,
         $.unary_expression,
         $.binary_expression,
-        $.ternary_expression,
+        // $.ternary_expression,
         $.update_expression,
         $.new_expression,
       ),
@@ -415,17 +414,17 @@ module.exports = grammar({
 
     spread_element: ($) => seq("...", $.expression),
 
-    ternary_expression: ($) =>
-      prec.right(
-        "ternary",
-        seq(
-          field("condition", $.expression),
-          alias($._ternary_qmark, "?"),
-          field("consequence", $.expression),
-          ":",
-          field("alternative", $.expression),
-        ),
-      ),
+    // ternary_expression: ($) =>
+    //   prec.right(
+    //     "ternary",
+    //     seq(
+    //       field("condition", $.expression),
+    //       alias($._ternary_qmark, "?"),
+    //       field("consequence", $.expression),
+    //       ":",
+    //       field("alternative", $.expression),
+    //     ),
+    //   ),
 
     // 25
     // 21
@@ -574,12 +573,7 @@ module.exports = grammar({
       seq(
         "{",
         repeat(
-          choice(
-            seq(field("member", $.method_definition), ";"),
-            seq(field("member", $.field_definition), ";"),
-            field("member", $.class_static_block),
-            ";",
-          ),
+          seq(field("member", $.method_definition)),
         ),
         "}",
       ),
@@ -610,7 +604,8 @@ module.exports = grammar({
         optional(
           "static",
         ),
-        field("name", $._property_name),
+        "function",
+        field("name", $.identifier),
         field("parameters", $.formal_parameters),
         field("body", $.statement_block),
       ),
