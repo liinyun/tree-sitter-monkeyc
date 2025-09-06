@@ -1,0 +1,74 @@
+============================================
+Function parameters with default values
+============================================
+
+
+function init(a,b) {
+  var c = 2;
+}
+-----
+(program
+  (function_declaration
+    (identifier)
+    (formal_parameters
+      (identifier)
+      (identifier))
+    (statement_block
+      (variable_declaration
+        (variable_declarator
+          (identifier)
+          (identifier)
+        )
+       )
+      )
+  )
+)
+
+
+
+
+============================================
+Classes
+============================================
+
+function initialize(a,b) {}
+  (function_declaration
+    (identifier)
+    (formal_parameters
+      (identifier)
+      (identifier))
+    (statement_block))
+
+
+class StopMenuDelegate extends Ui.MenuInputDelegate {
+	function initi() {
+		MenuInputDelegate.initializ();
+	}
+}
+
+-
+(program
+  (class_declaration
+    (identifier)
+    (class_heritage
+      (dotted_name
+        (identifier)
+        (identifier)))
+    (class_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (expression_statement
+            (call_expression
+              (dotted_name
+                (identifier)
+                (identifier))
+              (arguments))
+            (empty_statement))    
+        )
+      )  
+    )
+
+  )
+)

@@ -10,7 +10,53 @@
 module.exports = grammar({
   name: "monkeyc",
 
+
+  externals: $ => [
+    $._ternary_qmark,
+
+    // $._automatic_semicolon,
+  ],
+
   extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/u],
+
+  precedences: $ => [
+    [
+      'member',
+      'template_call',
+      'call',
+      $.update_expression,
+      'unary_void',
+      'binary_exp',
+      'binary_times',
+      'binary_plus',
+      'binary_shift',
+      'binary_compare',
+      'binary_relation',
+      'binary_equality',
+      'bitwise_and',
+      'bitwise_xor',
+      'bitwise_or',
+      'logical_and',
+      'logical_or',
+      'ternary',
+    ],
+    ['assign', $.primary_expression],
+    ['member', 'template_call', 'new', 'call', $.expression],
+    ['declaration', 'literal'],
+    [$.primary_expression, $.statement_block, 'object'],
+    [$.import_statement, $.import],
+  ],
+
+  // conflicts: $ => [
+  //   [$.primary_expression, $._property_name],
+  //   [$.primary_expression, $.method_definition],
+  //   [$.computed_property_name, $.array],
+  //   [$.binary_expression, $._initializer],
+  //   [$.class_static_block, $._property_name],
+  // ],
+
+
+
   word: ($) => $.identifier,
 
   supertypes: ($) => [
@@ -18,7 +64,6 @@ module.exports = grammar({
     $.declaration,
     $.expression,
     $.primary_expression,
-    $.pattern,
   ],
 
   rules: {
@@ -29,7 +74,7 @@ module.exports = grammar({
         $.import_statement,
         $.using_statement,
         // I don't think this useful
-        // $.expression_statement,
+        $.expression_statement,
         $.declaration,
         $.statement_block,
 
@@ -44,6 +89,7 @@ module.exports = grammar({
         $.continue_statement,
         $.return_statement,
         $.throw_statement,
+        $.empty_statement,
       ),
 
     declaration: ($) =>
@@ -108,6 +154,11 @@ module.exports = grammar({
     // Statements
     //
 
+    expression_statement: $ => seq(
+      $.expression,
+      $.empty_statement
+    ),
+
     variable_declaration: ($) =>
       seq(choice("var", "const"), $.variable_declarator, ";"),
 
@@ -115,7 +166,7 @@ module.exports = grammar({
       seq(field("name", $.identifier), optional($._initializer)),
 
     // statement_block in monkeyc don't need to append ";"
-    statement_block: ($) => prec.right(seq("{", repeat($.statement), "}")),
+    statement_block: ($) => seq("{", repeat($.statement), "}"),
 
     else_clause: ($) => seq("else", $.statement),
 
@@ -141,8 +192,8 @@ module.exports = grammar({
         "for",
         "(",
         field("initializer", $.variable_declaration),
-        field("condition", seq($.expressions, ";")),
-        field("increment", $.expressions),
+        field("condition", seq($.expression, ";")),
+        field("increment", $.expression),
         ")",
         field("body", $.statement),
       ),
@@ -179,8 +230,10 @@ module.exports = grammar({
     break_statement: ($) => seq("break", ";"),
     continue_statement: ($) => seq("continue", ";"),
     return_statement: ($) =>
-      seq("return", optional($.expressions), $._semicolon),
-    throw_statement: ($) => seq("throw", $.expressions, ";"),
+      seq("return", optional($.expression), ";"),
+    throw_statement: ($) => seq("throw", $.expression, ";"),
+
+    empty_statement: _ => ';',
 
     //
     // Statement components
@@ -192,7 +245,7 @@ module.exports = grammar({
     switch_case: ($) =>
       seq(
         "case",
-        field("value", $.expressions),
+        field("value", $.expression),
         ":",
         field("body", repeat($.statement)),
       ),
@@ -209,7 +262,7 @@ module.exports = grammar({
 
     finally_clause: ($) => seq("finally", field("body", $.statement_block)),
 
-    parenthesized_expression: ($) => seq("(", $.expressions, ")"),
+    parenthesized_expression: ($) => seq("(", $.expression, ")"),
     //
     // Expressions      expressions doesn't have ";" appended
     //
@@ -217,7 +270,6 @@ module.exports = grammar({
     expression: ($) =>
       choice(
         $.primary_expression,
-        $._jsx_element,
         $.assignment_expression,
         $.augmented_assignment_expression,
         $.unary_expression,
@@ -231,8 +283,6 @@ module.exports = grammar({
       choice(
         $.member_expression,
         $.parenthesized_expression,
-        $._identifier,
-        alias($._reserved_identifier, $.identifier),
         $.this,
         $.super,
         $.number,
@@ -241,23 +291,10 @@ module.exports = grammar({
         $.false,
         $.null,
         $.array,
-        $.meta_property,
         $.call_expression,
       ),
-    // it works just like symbols
-    assignment_pattern: ($) =>
-      seq(field("left", $.pattern), "=", field("right", $.expression)),
-
     array: ($) =>
       seq("[", commaSep(optional(choice($.expression, $.spread_element))), "]"),
-
-    // TODO: I don't understand this pattern much, actually, it's the $._lhs_expression part I don't understand
-    array_pattern: ($) =>
-      seq(
-        "[",
-        commaSep(optional(choice($.pattern, $.assignment_pattern))),
-        "]",
-      ),
 
     // An entity can be named, numeric (decimal), or numeric (hexadecimal). The
     // longest entity name is 29 characters long, and the HTML spec says that
@@ -276,7 +313,7 @@ module.exports = grammar({
         ),
       ),
 
-    class_heritage: ($) => seq("extends", $.expression),
+    class_heritage: ($) => seq("extends", $.dotted_name),
 
     function_declaration: ($) =>
       prec.right(
@@ -295,7 +332,7 @@ module.exports = grammar({
     call_expression: ($) =>
       prec(
         "call",
-        seq(field("function", $.identifier), field("arguments", $.arguments)),
+        seq(field("function", $.dotted_name), field("arguments", $.arguments)),
       ),
 
     // NOTE: I do not fully get it through, but this does useful in monkeyc
@@ -318,10 +355,7 @@ module.exports = grammar({
           ".",
           field(
             "property",
-            choice(
-              $.private_property_identifier,
-              alias($.identifier, $.property_identifier),
-            ),
+            alias($.identifier, $.property_identifier),
           ),
         ),
       ),
@@ -329,8 +363,7 @@ module.exports = grammar({
     _lhs_expression: ($) =>
       choice(
         $.member_expression,
-        $._identifier,
-        alias($._reserved_identifier, $.identifier),
+        $.identifier,
         // $._destructuring_pattern,
       ),
 
@@ -347,11 +380,11 @@ module.exports = grammar({
     _augmented_assignment_lhs: ($) =>
       choice(
         $.member_expression,
-        alias($._reserved_identifier, $.identifier),
         $.identifier,
         $.parenthesized_expression,
       ),
 
+    // I don't understand this part but I will save this part
     augmented_assignment_expression: ($) =>
       prec.right(
         "assign",
@@ -395,12 +428,14 @@ module.exports = grammar({
       ),
 
     // 25
-    // 18
+    // 21
     binary_expression: ($) =>
       choice(
         ...[
           ["&&", "logical_and"],
+          ['and', 'logical_and'],
           ["||", "logical_or"],
+          ['or', 'logical_or'],
           [">>", "binary_shift"],
           ["<<", "binary_shift"],
           ["&", "bitwise_and"],
@@ -417,15 +452,15 @@ module.exports = grammar({
           ["!=", "binary_equality"],
           [">=", "binary_relation"],
           [">", "binary_relation"],
-        ].map(([operator, precedence, associativity]) =>
-          (associativity === "right" ? prec.right : prec.left)(
+          ['instanceof', 'binary_relation'],
+
+        ].map(([operator, precedence]) =>
+          prec.left(
             precedence,
             seq(
               field(
                 "left",
-                operator === "in"
-                  ? choice($.expression, $.private_property_identifier)
-                  : $.expression,
+                $.expression,
               ),
               field("operator", operator),
               field("right", $.expression),
@@ -440,7 +475,7 @@ module.exports = grammar({
         seq(
           field(
             "operator",
-            choice("!", "~", "-", "+", "typeof", "void", "delete"),
+            choice("!", "~", "-", "+"),
           ),
           field("argument", $.expression),
         ),
@@ -476,16 +511,7 @@ module.exports = grammar({
           ),
           '"',
         ),
-        seq(
-          "'",
-          repeat(
-            choice(
-              alias($.unescaped_single_string_fragment, $.string_fragment),
-              $.escape_sequence,
-            ),
-          ),
-          "'",
-        ),
+
       ),
 
     // Workaround to https://github.com/tree-sitter/tree-sitter/issues/1156
@@ -495,41 +521,10 @@ module.exports = grammar({
     unescaped_double_string_fragment: (_) =>
       token.immediate(prec(1, /[^"\\\r\n]+/)),
 
-    // same here
-    unescaped_single_string_fragment: (_) =>
-      token.immediate(prec(1, /[^'\\\r\n]+/)),
-
-    escape_sequence: (_) =>
-      token.immediate(
-        seq(
-          "\\",
-          choice(
-            /[^xu0-7]/,
-            /[0-7]{1,3}/,
-            /x[0-9a-fA-F]{2}/,
-            /u[0-9a-fA-F]{4}/,
-            /u\{[0-9a-fA-F]+\}/,
-            /[\r?][\n\u2028\u2029]/,
-          ),
-        ),
-      ),
+    escape_sequence: (_) => token.immediate(/\\['"ntr\\u]/),
 
     number: (_) => {
-      const hexLiteral = seq(choice("0x", "0X"), /[\da-fA-F](_?[\da-fA-F])*/);
-
-      const decimalDigits = /\d(_?\d)*/;
-      const signedInteger = seq(optional(choice("-", "+")), decimalDigits);
-      const exponentPart = seq(choice("e", "E"), signedInteger);
-
-      const binaryLiteral = seq(choice("0b", "0B"), /[0-1](_?[0-1])*/);
-
-      const octalLiteral = seq(choice("0o", "0O"), /[0-7](_?[0-7])*/);
-
-      const bigintLiteral = seq(
-        choice(hexLiteral, binaryLiteral, octalLiteral, decimalDigits),
-        "n",
-      );
-
+      const decimalDigits = /\d+/;
       const decimalIntegerLiteral = choice(
         "0",
         seq(
@@ -544,20 +539,15 @@ module.exports = grammar({
           decimalIntegerLiteral,
           ".",
           optional(decimalDigits),
-          optional(exponentPart),
         ),
-        seq(".", decimalDigits, optional(exponentPart)),
-        seq(decimalIntegerLiteral, exponentPart),
+        seq(".", decimalDigits),
+        decimalIntegerLiteral,
         decimalDigits,
       );
 
       return token(
         choice(
-          hexLiteral,
           decimalLiteral,
-          binaryLiteral,
-          octalLiteral,
-          bigintLiteral,
         ),
       );
     },
@@ -568,24 +558,11 @@ module.exports = grammar({
     // unlike 'null'. We gave it its own rule so it's easy to
     // highlight in text editors and other applications.
 
-    private_property_identifier: (_) => {
-      const alpha =
-        /[^\x00-\x1F\s\p{Zs}0-9:;`"'@#.,|^&<=>+\-*/\\%?!~()\[\]{}\uFEFF\u2060\u200B\u2028\u2029]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\}/u;
-
-      const alphanumeric =
-        /[^\x00-\x1F\s\p{Zs}:;`"'@#.,|^&<=>+\-*/\\%?!~()\[\]{}\uFEFF\u2060\u200B\u2028\u2029]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\}/u;
-      return token(seq("#", alpha, repeat(alphanumeric)));
-    },
-
-    meta_property: (_) =>
-      choice(seq("new", ".", "target"), seq("import", ".", "meta")),
-
     this: (_) => "this",
     super: (_) => "super",
     true: (_) => "true",
     false: (_) => "false",
     null: (_) => "null",
-    undefined: (_) => "undefined",
 
     //
     // Expression components
@@ -598,8 +575,8 @@ module.exports = grammar({
         "{",
         repeat(
           choice(
-            seq(field("member", $.method_definition), optional(";")),
-            seq(field("member", $.field_definition), $._semicolon),
+            seq(field("member", $.method_definition), ";"),
+            seq(field("member", $.field_definition), ";"),
             field("member", $.class_static_block),
             ";",
           ),
@@ -619,26 +596,20 @@ module.exports = grammar({
     class_static_block: ($) =>
       seq(
         "static",
-        optional($._automatic_semicolon),
         field("body", $.statement_block),
       ),
 
     // This negative dynamic precedence ensures that during error recovery,
     // unfinished constructs are generally treated as literal expressions,
     // not patterns.
-    pattern: ($) => prec.dynamic(-1, choice($._lhs_expression, $.rest_pattern)),
 
     rest_pattern: ($) => prec.right(seq("...", $._lhs_expression)),
 
     method_definition: ($) =>
       seq(
         optional(
-          choice(
-            "static",
-            alias(token(seq("static", /\s+/, "get", /\s*\n/)), "static get"),
-          ),
+          "static",
         ),
-        optional(choice("get", "set", "*")),
         field("name", $._property_name),
         field("parameters", $.formal_parameters),
         field("body", $.statement_block),
@@ -647,29 +618,12 @@ module.exports = grammar({
     pair: ($) =>
       seq(field("key", $._property_name), ":", field("value", $.expression)),
 
-    pair_pattern: ($) =>
-      seq(
-        field("key", $._property_name),
-        ":",
-        field("value", choice($.pattern, $.assignment_pattern)),
-      ),
-
     _property_name: ($) =>
-      choice(
-        alias(
-          choice($.identifier, $._reserved_identifier),
-          $.property_identifier,
-        ),
-        $.private_property_identifier,
-        $.string,
-        $.number,
-        $.computed_property_name,
+      alias(
+        $.identifier,
+        $.property_identifier,
       ),
 
-    computed_property_name: ($) => seq("[", $.expression, "]"),
-
-    _reserved_identifier: (_) =>
-      choice("get", "set", "async", "static", "export", "let"),
 
     // _semicolon: ($) => choice($._automatic_semicolon, ";"),
   },
