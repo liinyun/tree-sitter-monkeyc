@@ -10,36 +10,34 @@
 module.exports = grammar({
   name: "monkeyc",
 
-
   extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/u],
 
-  precedences: $ => [
+  precedences: ($) => [
     [
-      'member',
-      'call',
+      "member",
+      "call",
       $.update_expression,
-      'unary_void',
-      'binary_exp',
-      'binary_times',
-      'binary_plus',
-      'binary_shift',
-      'binary_compare',
-      'binary_relation',
-      'binary_equality',
-      'bitwise_and',
-      'bitwise_xor',
-      'bitwise_or',
-      'logical_and',
-      'logical_or',
-      'ternary',
+      "unary_void",
+      "binary_exp",
+      "binary_times",
+      "binary_plus",
+      "binary_shift",
+      "binary_compare",
+      "binary_relation",
+      "binary_equality",
+      "bitwise_and",
+      "bitwise_xor",
+      "bitwise_or",
+      "logical_and",
+      "logical_or",
+      "ternary",
     ],
-    ['assign', $.primary_expression],
-    ['new', 'call', $.expression],
-    ['declaration', 'literal'],
-    [$.primary_expression, $.statement_block, 'object'],
+    ["assign", $.primary_expression],
+    ["new", "call", $.expression],
+    ["declaration", "literal"],
+    [$.primary_expression, $.statement_block, "object"],
     [$.import_statement, $.import],
   ],
-
 
   word: ($) => $.identifier,
 
@@ -134,14 +132,21 @@ module.exports = grammar({
     // this is for name with dot
     dotted_name: ($) => prec(1, sep1($.identifier, ".")),
 
+    attribute: ($) =>
+      prec(
+        "call",
+        seq(
+          field("object", $.primary_expression),
+          ".",
+          field("attribute", $.identifier),
+        ),
+      ),
+
     //
     // Statements
     //
 
-    expression_statement: $ => seq(
-      $.expression,
-      $.empty_statement
-    ),
+    expression_statement: ($) => seq($.expression, $.empty_statement),
 
     variable_declaration: ($) =>
       seq(choice("var", "const"), $.variable_declarator, ";"),
@@ -213,11 +218,10 @@ module.exports = grammar({
     // these 4 will be used as $statement in for and other place
     break_statement: ($) => seq("break", ";"),
     continue_statement: ($) => seq("continue", ";"),
-    return_statement: ($) =>
-      seq("return", optional($.expression), ";"),
+    return_statement: ($) => seq("return", optional($.expression), ";"),
     throw_statement: ($) => seq("throw", $.expression, ";"),
 
-    empty_statement: _ => ';',
+    empty_statement: (_) => ";",
 
     //
     // Statement components
@@ -255,6 +259,7 @@ module.exports = grammar({
       choice(
         $.primary_expression,
         $.assignment_expression,
+        $.augmented_assignment_expression,
         $.unary_expression,
         $.binary_expression,
         // $.ternary_expression,
@@ -264,6 +269,9 @@ module.exports = grammar({
 
     primary_expression: ($) =>
       choice(
+        $.identifier,
+        // $.dotted_name,
+        $.attribute,
         $.parenthesized_expression,
         $.this,
         $.super,
@@ -275,8 +283,7 @@ module.exports = grammar({
         $.array,
         $.call_expression,
       ),
-    array: ($) =>
-      seq("[", commaSep(optional($.expression)), "]"),
+    array: ($) => seq("[", commaSep(optional($.expression)), "]"),
 
     class_declaration: ($) =>
       prec(
@@ -327,14 +334,40 @@ module.exports = grammar({
       prec.right(
         "assign",
         seq(
-          field("left", $.parenthesized_expression),
+          field("left", choice($.parenthesized_expression, $.dotted_name)),
           "=",
           field("right", $.expression),
         ),
       ),
 
-    _initializer: ($) => seq("=", field("value", $.expression)),
+    // _augmented_assignment_lhs: ($) =>
+    //   choice($.identifier, $.parenthesized_expression),
 
+    augmented_assignment_expression: ($) =>
+      prec.right(
+        "assign",
+        seq(
+          field("left", $.dotted_name),
+          field(
+            "operator",
+            choice(
+              "+=",
+              "-=",
+              "*=",
+              "/=",
+              "%=",
+              "^=",
+              "&=",
+              "|=",
+              "&&=",
+              "||=",
+            ),
+          ),
+          field("right", $.expression),
+        ),
+      ),
+
+    _initializer: ($) => seq("=", field("value", $.expression)),
 
     // 25
     // 21
@@ -342,9 +375,9 @@ module.exports = grammar({
       choice(
         ...[
           ["&&", "logical_and"],
-          ['and', 'logical_and'],
+          ["and", "logical_and"],
           ["||", "logical_or"],
-          ['or', 'logical_or'],
+          ["or", "logical_or"],
           [">>", "binary_shift"],
           ["<<", "binary_shift"],
           ["&", "bitwise_and"],
@@ -361,16 +394,12 @@ module.exports = grammar({
           ["!=", "binary_equality"],
           [">=", "binary_relation"],
           [">", "binary_relation"],
-          ['instanceof', 'binary_relation'],
-
+          ["instanceof", "binary_relation"],
         ].map(([operator, precedence]) =>
           prec.left(
             precedence,
             seq(
-              field(
-                "left",
-                $.expression,
-              ),
+              field("left", $.expression),
               field("operator", operator),
               field("right", $.expression),
             ),
@@ -382,16 +411,13 @@ module.exports = grammar({
       prec.left(
         "unary_void",
         seq(
-          field(
-            "operator",
-            choice("!", "~", "-", "+"),
-          ),
+          field("operator", choice("!", "~", "-", "+")),
           field("argument", $.expression),
         ),
       ),
 
     // monkeyc does have this, but I'm not sure if there are difference
-    // between these two. 
+    // between these two.
     update_expression: ($) =>
       prec.left(
         choice(
@@ -422,7 +448,6 @@ module.exports = grammar({
           ),
           '"',
         ),
-
       ),
 
     // Workaround to https://github.com/tree-sitter/tree-sitter/issues/1156
@@ -446,21 +471,13 @@ module.exports = grammar({
       );
 
       const decimalLiteral = choice(
-        seq(
-          decimalIntegerLiteral,
-          ".",
-          optional(decimalDigits),
-        ),
+        seq(decimalIntegerLiteral, ".", optional(decimalDigits)),
         seq(".", decimalDigits),
         decimalIntegerLiteral,
         decimalDigits,
       );
 
-      return token(
-        choice(
-          decimalLiteral,
-        ),
-      );
+      return token(choice(decimalLiteral));
     },
 
     this: (_) => "this",
@@ -473,16 +490,10 @@ module.exports = grammar({
     // Expression components
     //
 
-    arguments: ($) => seq("(", commaSep(optional($.identifier)), ")"),
+    arguments: ($) => seq("(", commaSep(optional($.expression)), ")"),
 
     class_body: ($) =>
-      seq(
-        "{",
-        repeat(
-          seq(field("member", $.method_definition)),
-        ),
-        "}",
-      ),
+      seq("{", repeat(seq(field("member", $.method_definition))), "}"),
 
     field_definition: ($) =>
       seq(
@@ -493,24 +504,16 @@ module.exports = grammar({
 
     formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),
 
-
     method_definition: ($) =>
       seq(
-        optional(
-          "static",
-        ),
+        optional("static"),
         "function",
         field("name", $._property_name),
         field("parameters", $.formal_parameters),
         field("body", $.statement_block),
       ),
 
-    _property_name: ($) =>
-      alias(
-        $.identifier,
-        $.property_identifier,
-      ),
-
+    _property_name: ($) => alias($.identifier, $.property_identifier),
 
     // _semicolon: ($) => choice($._automatic_semicolon, ";"),
   },

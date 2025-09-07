@@ -41,15 +41,12 @@ function init(a,b) {
 )
 
 
-
-
-
-
-
-
 ============================================
 Property access
 ============================================
+x.someProperty;
+x[someVariable];
+x["some-string"];
 
 
 
@@ -63,18 +60,39 @@ Chained Property access
 
 
 
-============================================
-Chained callbacks
-============================================
-
-
-
 
 
 
 ============================================
 Function calls
 ============================================
+generateHandCoordinates(
+    _screenCenterPoint,
+    secondHand,
+    60,
+    20,
+    2
+);
+
+---------
+(program
+  (expression_statement
+    (call_expression
+      (dotted_name
+        (identifier)
+      )
+      (arguments
+        (identifier)
+        (identifier)
+        (number)
+        (number)
+        (number) 
+      )
+    )
+  (empty_statement)
+  )
+)
+ 
 
 
 
@@ -82,22 +100,36 @@ Function calls
 ============================================
 Constructor calls
 ============================================
+new module.Klass(1, "two");
+new Thing();
 
-
-
-
-
-============================================
-Function parameters with default values
-============================================
-
-
+-----
+(program
+  (expression_statement
+    (new_expression
+      (call_expression
+        (dotted_name
+          (identifier)
+          (identifier))
+      (arguments
+        (number)
+        (string
+          (string_fragment)))))
+    (empty_statement))
+  (expression_statement
+    (new_expression
+      (call_expression
+        (dotted_name
+          (identifier))
+        (arguments)))
+      (empty_statement)
+      )
+)
 
 
 ============================================
 Classes
 ============================================
-
 class StopMenuDelegate {
 	function initclass() {
 		MenuInputDelegate.initializ();
@@ -160,6 +192,35 @@ Arrays
 Math operators
 ============================================
 
+i++;
+i--;
+i + j * 3 - j % 5;
+
+------
+(program
+  (expression_statement
+    (update_expression
+      (identifier))
+    (empty_statement))
+    (expression_statement
+    (update_expression
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (number)))
+      (binary_expression
+        (identifier)
+        (number)))
+        (empty_statement)
+  )
+)
+
+
 
 
 
@@ -167,14 +228,83 @@ Math operators
 Boolean operators
 ============================================
 
+i || j;
+i && j;
+!a && !b || !c && !d;
 
+----------
 
+(program
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (binary_expression
+        (unary_expression
+          (identifier))
+        (unary_expression
+          (identifier)))
+      (binary_expression
+        (unary_expression
+          (identifier))
+        (unary_expression
+          (identifier))))
+    (empty_statement)
+          ))
 
 
 
 ============================================
 Bitwise operators
 ============================================
+
+i >> j;
+i << j;
+i & j;
+i | j;
+~i ^ ~j;
+-----
+
+(program
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+  (empty_statement)) 
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement)
+      )
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement)
+      )
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement)
+      )
+  (expression_statement
+    (binary_expression
+      (unary_expression
+        (identifier))
+      (unary_expression
+        (identifier)))
+    (empty_statement)
+        ))
 
 
 
@@ -183,18 +313,77 @@ Bitwise operators
 ============================================
 Relational operators
 ============================================
+x < y;
+x <= y;
+x == y;
+x != y;
+x >= y;
+x > y;
 
+---
 
+(program
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement))
+)
 
 
 
 ==============================================
 Assignments
 ==============================================
+x = 0;
+x.y = 0;
 
-
-
-
+------
+(program
+  (expression_statement
+    (assignment_expression
+      (dotted_name
+        (identifier)
+      )
+      (number))
+    (empty_statement)
+      )
+  (expression_statement
+    (assignment_expression
+      (dotted_name
+        (identifier)
+        (identifier)
+      )
+      (number))
+      (empty_statement)
+      )
+)
+ 
 
 ==============================================
 Ternaries
@@ -211,8 +400,16 @@ Ternaries
 Type operators
 ==============================================
 
+x instanceof String;
+------
 
-
+(program
+ (expression_statement
+    (binary_expression
+      (identifier)
+      (identifier))
+    (empty_statement)
+      ))
 
 
 
@@ -220,8 +417,62 @@ Type operators
 Augmented assignments
 ==============================================
 
+s |= 1;
+t %= 2;
+w ^= 3;
+x += 4;
+y.z *= 5;
+async += 1;
 
+---
 
+(program
+  (expression_statement
+    (augmented_assignment_expression
+      (dotted_name
+      (identifier))
+      (number))
+    (empty_statement)
+      )
+  (expression_statement
+    (augmented_assignment_expression
+      (dotted_name
+      (identifier))
+      (number))
+    (empty_statement)
+      )
+  (expression_statement
+    (augmented_assignment_expression
+      (dotted_name
+       (identifier))
+      (number))
+    (empty_statement)
+      )
+  (expression_statement
+    (augmented_assignment_expression
+      (dotted_name
+       (identifier))
+      (number))
+    (empty_statement)
+      )
+  
+  (expression_statement
+    (augmented_assignment_expression
+      (dotted_name
+        (identifier)
+        (identifier))
+      (number))
+    (empty_statement)
+      )
+
+  (expression_statement
+    (augmented_assignment_expression
+      (dotted_name
+       (identifier))
+      (number))
+    (empty_statement)
+      )
+)
 
 
 
@@ -229,11 +480,77 @@ Augmented assignments
 Operator precedence
 ==============================================
 
+a <= b && c >= d;
+a && b(c) && d;
+a && b | c;
+a - b << c;
+
+-----
+
+(program
+  (expression_statement
+    (binary_expression
+      (binary_expression
+        (identifier)
+        (identifier))
+      (binary_expression
+        (identifier)
+        (identifier)))
+    (empty_statement)
+        )
+  
+  (expression_statement
+    (binary_expression
+      (binary_expression
+        (identifier)
+        (call_expression
+          (dotted_name
+          (identifier))
+          (arguments
+            (identifier))))
+      (identifier))
+    (empty_statement))
+ 
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (identifier)))
+    (empty_statement)
+        )
+  (expression_statement
+    (binary_expression
+      (binary_expression
+        (identifier)
+        (identifier))
+      (identifier))
+    (empty_statement)
+      )
+  )
+
 
 
 ==============================================
 Forward slashes after parenthesized expressions
 ==============================================
+
+(foo - bar) / baz;
+
+---
+
+(program
+  (expression_statement
+    (binary_expression
+      (parenthesized_expression
+        (binary_expression
+          (identifier)
+          (identifier)))
+      (identifier))
+    (empty_statement)
+      )
+  
+ )
 
 
 
@@ -242,6 +559,19 @@ Forward slashes after parenthesized expressions
 Non-breaking spaces as whitespace
 ==============================================
 
+
+⁠// Type definitions for Dexie v1.4.1
+﻿// Project: https://github.com/dfahlander/Dexie.js
+​// Definitions by: David Fahlander <http://github.com/dfahlander>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+
+---
+
+(program
+  (comment)
+  (comment)
+  (comment)
+  (comment))
 
 
 
