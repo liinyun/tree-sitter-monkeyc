@@ -34,6 +34,7 @@ module.exports = grammar({
       'ternary',
     ],
     ['assign', $.primary_expression],
+    ['new', 'call', $.expression],
     ['declaration', 'literal'],
     [$.primary_expression, $.statement_block, 'object'],
     [$.import_statement, $.import],
@@ -57,6 +58,7 @@ module.exports = grammar({
         $.import_statement,
         $.using_statement,
         $.expression_statement,
+        // $.primary_expression,
         $.declaration,
         $.statement_block,
 
@@ -253,7 +255,6 @@ module.exports = grammar({
       choice(
         $.primary_expression,
         $.assignment_expression,
-        $.augmented_assignment_expression,
         $.unary_expression,
         $.binary_expression,
         // $.ternary_expression,
@@ -263,7 +264,6 @@ module.exports = grammar({
 
     primary_expression: ($) =>
       choice(
-        $.member_expression,
         $.parenthesized_expression,
         $.this,
         $.super,
@@ -276,7 +276,7 @@ module.exports = grammar({
         $.call_expression,
       ),
     array: ($) =>
-      seq("[", commaSep(optional(choice($.expression, $.spread_element))), "]"),
+      seq("[", commaSep(optional($.expression)), "]"),
 
     class_declaration: ($) =>
       prec(
@@ -323,19 +323,6 @@ module.exports = grammar({
       ),
 
     // I don't understand why choice
-    member_expression: ($) =>
-      prec(
-        "member",
-        seq(
-          field("object", choice($.expression, $.primary_expression)),
-          ".",
-          field(
-            "property",
-            alias($.identifier, $.property_identifier),
-          ),
-        ),
-      ),
-
     assignment_expression: ($) =>
       prec.right(
         "assign",

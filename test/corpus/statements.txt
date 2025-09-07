@@ -46,8 +46,21 @@ using Toybox.ActivityRecording as ActivityRecording;
 Variable declarations
 ============================================
 var x = 1;
+private var _fullScreenRefresh as Boolean;
+private var _font as FontResource?;
+private var _screenCenterPoint as Array<Number>?;
+var cos = Math.cos(angle);
+var x = coords[i][0] * cos - coords[i][1] * sin + 0.5;
+var result = new Array<Array<Float> >[4];
+var coords =
+    [
+        [-(width / 2), tailLength] as Array<Number>,
+        [-(width / 2), -handLength] as Array<Number>,
+        [width / 2, -handLength] as Array<Number>,
+        [width / 2, tailLength] as Array<Number>,
+    ] as Array<Array<Number> >;
+ 
 
--------
 (program
   (variable_declaration
     (variable_declarator
@@ -55,6 +68,154 @@ var x = 1;
       (number)))
  
 )
+
+
+
+============================================
+Assignments
+============================================
+
+_fullScreenRefresh = true;
+_screenShape = System.getDeviceSettings().screenShape;
+
+
+
+
+
+============================================
+If statements
+============================================
+
+
+
+
+============================================
+If-else statements
+============================================
+
+
+============================================
+For statements
+============================================
+
+
+
+
+
+
+
+============================================
+While statements
+============================================
+
+
+
+
+
+
+============================================
+Do statements
+============================================
+
+
+
+
+
+============================================
+Return statements
+============================================
+
+
+
+
+
+
+
+============================================
+Comments
+============================================
+
+
+
+
+==========================================
+Comments between statements
+==========================================
+
+
+
+
+
+
+
+
+============================================
+Comments with asterisks
+============================================
+
+
+
+
+
+
+==========================================
+Comments within expressions
+==========================================
+
+
+
+
+
+
+
+============================================
+Switch statements
+============================================
+
+
+
+
+
+
+
+============================================
+Throw statements
+============================================
+
+
+
+
+
+============================================
+Throw statements with sequence expressions
+============================================
+
+
+
+
+
+
+============================================
+Try catch finally statements
+============================================
+
+
+
+
+
+============================================
+Empty statements
+============================================
+
+
+
+
+
+
+
+
+
+
 
 
 
