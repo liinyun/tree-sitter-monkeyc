@@ -81,10 +81,46 @@ _screenShape = System.getDeviceSettings().screenShape;
 
 
 
-
 ============================================
 If statements
 ============================================
+
+if (x) {
+  log(y);
+}
+
+if (a.b) {
+  log(c);
+  d;
+}
+
+
+----
+
+(program
+  (if_statement
+    condition: (parenthesized_expression
+      (identifier))
+    consequence: (expression_statement
+      (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (identifier)))))
+  (if_statement
+    condition: (parenthesized_expression
+      (member_expression
+        object: (identifier)
+        property: (property_identifier)))
+    consequence: (statement_block
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (arguments
+            (identifier))))
+      (expression_statement
+        (identifier))))
+  )
+
 
 
 
