@@ -215,7 +215,6 @@ module.exports = grammar({
           field("body", $.statement),
           "while",
           field("condition", $.parenthesized_expression),
-          ";",
         ),
       ),
 
@@ -225,9 +224,20 @@ module.exports = grammar({
       seq(
         "try",
         field("body", $.statement_block),
-        field("handler", $.catch_clause),
+        repeat1(field("handler", $.catch_clause)),
         field("finalizer", $.finally_clause),
       ),
+    catch_clause: ($) =>
+      seq(
+        "catch",
+        optional(seq("(", field("parameter", $.expression), ")")),
+        // seq("(", field("parameter", $.expression), ")"),
+        field("body", $.statement_block),
+      ),
+
+    finally_clause: ($) => seq("finally", field("body", $.statement_block)),
+
+
 
     // these 4 will be used as $statement in for and other place
     break_statement: ($) => seq("break", ";"),
@@ -242,7 +252,7 @@ module.exports = grammar({
     //
 
     switch_body: ($) =>
-      seq("{", repeat(choice($.switch_case, $.switch_default)), "}"),
+      seq("{", repeat($.switch_case), optional($.switch_default), "}"),
 
     switch_case: ($) =>
       seq(
@@ -254,15 +264,6 @@ module.exports = grammar({
 
     switch_default: ($) =>
       seq("default", ":", field("body", repeat($.statement))),
-
-    catch_clause: ($) =>
-      seq(
-        "catch",
-        optional(seq("(", field("parameter", $.identifier), ")")),
-        field("body", $.statement_block),
-      ),
-
-    finally_clause: ($) => seq("finally", field("body", $.statement_block)),
 
     parenthesized_expression: ($) => seq("(", $.expression, ")"),
     //
@@ -308,12 +309,22 @@ module.exports = grammar({
       prec(
         "declaration",
         seq(
+          optional($.modifiers),
           "class",
           field("name", $.identifier),
           optional($.class_heritage),
           field("body", $.class_body),
         ),
       ),
+    modifiers: $ => repeat1(choice(
+      'public',
+      'protected',
+      'private',
+      'static',
+      'final',
+      'default',
+    )),
+
 
     class_heritage: ($) => seq("extends", $.expression),
 
@@ -358,6 +369,11 @@ module.exports = grammar({
           field("right", $.expression),
         ),
       ),
+
+    pattern: $ => choice(
+      $.identifier,
+      $.attribute,
+    ),
 
     // _augmented_assignment_lhs: ($) =>
     //   choice($.identifier, $.parenthesized_expression),
@@ -430,7 +446,7 @@ module.exports = grammar({
       prec.left(
         "unary_void",
         seq(
-          field("operator", choice("!", "~", "-", "+")),
+          field("operator", choice("!", "~", "-", "+", "instanceof")),
           field("argument", $.expression),
         ),
       ),
@@ -514,27 +530,27 @@ module.exports = grammar({
     arguments: ($) => seq("(", commaSep(optional($.expression)), ")"),
 
     class_body: ($) =>
-      seq("{", repeat(seq(field("member", $.method_definition))), "}"),
+      seq("{", repeat(seq(field("member",
+        choice(
+          $.method_definition,
+          $.field_definition,
+        )
+      ))), "}"),
 
     field_definition: ($) =>
       seq(
-        optional("static"),
+        optional($.modifiers),
         field("property", $._property_name),
         optional($._initializer),
       ),
 
-
-    pattern: $ => choice(
-      $.identifier,
-      $.attribute,
-    ),
 
 
     formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),
 
     method_definition: ($) =>
       seq(
-        optional("static"),
+        optional($.modifiers),
         "function",
         field("name", $._property_name),
         field("parameters", $.formal_parameters),

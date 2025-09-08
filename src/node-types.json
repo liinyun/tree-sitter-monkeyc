@@ -499,7 +499,7 @@
         "required": false,
         "types": [
           {
-            "type": "identifier",
+            "type": "expression",
             "named": true
           }
         ]
@@ -514,6 +514,10 @@
         "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": "field_definition",
+            "named": true
+          },
           {
             "type": "method_definition",
             "named": true
@@ -548,11 +552,15 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
           "type": "class_heritage",
+          "named": true
+        },
+        {
+          "type": "modifiers",
           "named": true
         }
       ]
@@ -653,6 +661,42 @@
         },
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "field_definition",
+    "named": true,
+    "fields": {
+      "property": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "property_identifier",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "modifiers",
           "named": true
         }
       ]
@@ -886,7 +930,22 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "modifiers",
+          "named": true
+        }
+      ]
     }
+  },
+  {
+    "type": "modifiers",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "new_expression",
@@ -1144,7 +1203,7 @@
         ]
       },
       "handler": {
-        "multiple": false,
+        "multiple": true,
         "required": true,
         "types": [
           {
@@ -1183,6 +1242,10 @@
           },
           {
             "type": "-",
+            "named": false
+          },
+          {
+            "type": "instanceof",
             "named": false
           },
           {
@@ -1519,6 +1582,10 @@
     "named": true
   },
   {
+    "type": "final",
+    "named": false
+  },
+  {
     "type": "finally",
     "named": false
   },
@@ -1563,8 +1630,20 @@
     "named": false
   },
   {
+    "type": "private",
+    "named": false
+  },
+  {
     "type": "property_identifier",
     "named": true
+  },
+  {
+    "type": "protected",
+    "named": false
+  },
+  {
+    "type": "public",
+    "named": false
   },
   {
     "type": "return",

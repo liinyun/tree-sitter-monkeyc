@@ -118,7 +118,7 @@ class AnalogView extends WatchUi.WatchFace {
             var y = coords[i][0] * sin + coords[i][1] * cos + 0.5;
 
             result[i] =
-                [centerPoint[0] + x, centerPoint[1] + y] as Array<Float>;
+                [centerpoint[0] + x, centerpoint[1] + y] as array<float>;
         }
 
         return result;

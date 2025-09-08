@@ -89,7 +89,7 @@ if (x) {
   log(y);
 }
 
-if (a.b == true) {
+if (a.b) {
   log(c);
   d;
 }
@@ -105,8 +105,7 @@ if (a.b == true) {
     (statement_block
       (expression_statement
         (call_expression
-          function: (dotted_name
-            (identifier)) 
+          function: (identifier) 
           arguments: (arguments
             (identifier)))
         (empty_statement))))
@@ -114,13 +113,12 @@ if (a.b == true) {
     condition: (parenthesized_expression
       (member_expression
         object: (identifier)
-        property: (identifier)))
+        property: (property_identifier)))
 
     consequence: (statement_block
       (expression_statement
         (call_expression
-          function: (dotted_name
-            (identifier))
+          function: (identifier)
           arguments: (arguments
             (identifier)))
           (empty_statement)
@@ -138,11 +136,132 @@ if (a.b == true) {
 If-else statements
 ============================================
 
+if (x) {
+  y;
+}
+else if (a) {
+  b;
+}
+
+if (a) {
+  c;
+  d;
+} else {
+  e;
+}
+
+----
+
+(program
+  (if_statement
+    condition: (parenthesized_expression
+      (identifier))
+    consequence: (statement_block
+      (expression_statement
+        (identifier)
+      (empty_statement))) 
+    alternative: (else_clause
+      (if_statement
+        condition: (parenthesized_expression
+          (identifier))
+        consequence: (statement_block
+          (expression_statement
+          (identifier)
+          (empty_statement)
+        ) ))))
+  (if_statement
+    condition: (parenthesized_expression
+      (identifier))
+    consequence: (statement_block
+      (expression_statement
+        (identifier)
+        (empty_statement))
+      (expression_statement
+        (identifier)
+        (empty_statement)))
+    alternative: (else_clause
+      (statement_block
+        (expression_statement
+          (identifier)
+          (empty_statement))))))
+
+
 
 ============================================
 For statements
 ============================================
 
+for (var i = 0; i < 4; i++) {
+  e;
+}
+
+for (
+    var i = Math.PI / 6;
+    i <= (11 * Math.PI) / 6;
+    i += Math.PI / 3
+) {
+    // Partially unrolled loop to draw two tickmarks in 15 minute block.
+    dc.drawLine(sX, sY, eX, eY);
+}
+
+-----
+(program
+  (for_statement
+    initializer: (variable_declaration
+      (variable_declarator
+        name: (identifier)
+        value: (number)))
+    condition: (binary_expression
+      left: (identifier)
+      right: (number))
+    increment: (update_expression
+      argument: (identifier))
+    body: (statement_block
+      (expression_statement
+        (identifier)
+      (empty_statement))))
+  (for_statement
+    initializer: (variable_declaration
+      (variable_declarator
+        name: (identifier)
+        value: (binary_expression
+          left: (member_expression
+                object: (identifier)
+                property: (property_identifier))
+          right: (number))
+        )
+      )
+    condition: (binary_expression
+      left: (identifier)
+      right: (binary_expression
+        left: (parenthesized_expression
+          (binary_expression
+            left: (number)
+            right: (member_expression
+              object: (identifier)
+              property: (property_identifier))))
+        right: (number)))
+    increment: (augmented_assignment_expression
+      left: (pattern
+        (identifier))
+      right: (binary_expression
+        left: (member_expression
+          object: (identifier)
+          property: (property_identifier))
+        right: (number)))
+    body: (statement_block
+      (comment)
+      (expression_statement
+        (call_expression
+          function: (member_expression
+            object: (identifier)
+            property: (property_identifier))
+          arguments: (arguments
+            (identifier)
+            (identifier)
+            (identifier)
+            (identifier)))
+        (empty_statement)))))
 
 
 
@@ -152,8 +271,22 @@ For statements
 ============================================
 While statements
 ============================================
+while (a) {
+  b();
+}
 
+-----
 
+(program 
+  (while_statement
+    condition: (parenthesized_expression
+      (identifier))
+    body: (statement_block
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (arguments))
+      (empty_statement)))))
 
 
 
@@ -162,14 +295,35 @@ While statements
 Do statements
 ============================================
 
+do {
+  a;
+} while (b)
 
+-----
+(program
+  (do_statement
+    body: (statement_block
+      (expression_statement
+        (identifier)
+        (empty_statement)
+        ))
+    condition: (parenthesized_expression
+      (identifier))))
 
 
 
 ============================================
 Return statements
 ============================================
+return;
+return 5;
 
+-----
+(program
+  (return_statement)
+  (return_statement
+    (number))
+) 
 
 
 
@@ -207,6 +361,14 @@ Comments with asterisks
 Comments within expressions
 ==========================================
 
+y; // comment
+
+---------
+(program
+  (expression_statement
+    (identifier)
+    (empty_statement))
+    (comment))
 
 
 
@@ -216,17 +378,121 @@ Comments within expressions
 ============================================
 Switch statements
 ============================================
+switch ( obj ) {
+    case true:
+    // Do something
+    break;
+    case 1:
+    // Do something
+    break;
+    case "B": {
+        // Do something
+        break;
+    }
+    // Executed based on the type
+    // instead of the value
+    case instanceof MyClass:
+    // Do something
+    break;
+    default:
+    // If all else fails
+    break;
+}
 
+// Monkey C also supports fall-through into the next case statement
+switch ( obj ) {
+    case false:
+    // Do something
+    // Fall through and execute the code in the next case block
+    case 2: {
+        // Do something
+        break;
+    }
+    case instanceof MyOtherClass:
+    // Do something
+    break;
+    case "B":
+    // Do something
+    // Fall through and execute the code in the default block
+    default:
+    // If all else fails
+    break;
+}
 
-
-
-
-
+-----
+(program
+  (switch_statement
+    (parenthesized_expression
+      (identifier))
+    (switch_body
+      (switch_case
+        (true)
+        (comment)
+        (break_statement))
+      (switch_case
+        (number)
+        (comment)
+        (break_statement))
+      (switch_case
+        (string
+          (string_fragment))
+        (statement_block
+          (comment)
+          (break_statement)))
+      (comment)
+      (comment)
+      (switch_case
+        (unary_expression
+        (identifier))
+        (comment)
+        (break_statement))
+      (switch_default
+        (comment)
+        (break_statement))))
+  (comment)
+  (switch_statement
+    (parenthesized_expression
+      (identifier))
+    (switch_body
+      (switch_case
+        (false))
+      (comment)
+      (comment)
+      (switch_case
+        (number)
+        (statement_block
+          (comment)
+          (break_statement)))
+      (switch_case
+        (unary_expression
+         (identifier))
+        (comment)
+        (break_statement))
+      (switch_case
+        (string
+          (string_fragment)))
+      (comment)
+      (comment)
+      (switch_default
+        (comment)
+        (break_statement)))))
+ 
 
 ============================================
 Throw statements
 ============================================
 
+throw new Error("uh oh");
+
+-----
+
+(program
+  (throw_statement
+    (new_expression
+      (identifier)
+      (arguments
+        (string
+          (string_fragment))))))
 
 
 
@@ -243,7 +509,37 @@ Throw statements with sequence expressions
 ============================================
 Try catch finally statements
 ============================================
+try {
+    // Code to execute
+}
+catch( ex instanceof AnExceptionClass ) {
+    // Code to handle the throw of AnExceptionClass
+}
+catch( ex ) {
+    // Code to catch all execeptions
+}
+finally {
+    // Code to execute when
+}
 
+------
+(program
+  (try_statement
+    (statement_block
+      (comment))
+    (catch_clause
+      (binary_expression
+        (identifier)
+        (identifier))
+      (statement_block
+        (comment)))
+    (catch_clause
+      (identifier)
+      (statement_block
+        (comment)))
+    (finally_clause
+      (statement_block
+        (comment)))))
 
 
 
