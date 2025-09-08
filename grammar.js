@@ -546,8 +546,10 @@ module.exports = grammar({
     field_definition: ($) =>
       seq(
         optional($.modifiers),
+        choice("var", "const"),
         field("property", $._property_name),
         optional($._initializer),
+        ";",
       ),
 
     formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),

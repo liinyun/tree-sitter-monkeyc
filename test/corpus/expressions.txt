@@ -165,8 +165,8 @@ Class Property Fields
 ============================================
 class Foo
 {
-    public var publicVar;
-    protected var _protectedVar
+    public const publicVar;
+    protected var _protectedVar;
     private var _privateVar;
 
     public function initialize() {
@@ -176,8 +176,46 @@ class Foo
     }
 }
 
-
-
+------
+(program
+  (class_declaration
+    (identifier)
+    (class_body
+      (field_definition
+        (modifiers)
+        (property_identifier))
+      (field_definition
+        (modifiers)
+        (property_identifier))
+      (field_definition
+        (modifiers)
+        (property_identifier))
+      (method_definition
+        (modifiers)
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (expression_statement
+            (assignment_expression
+              (pattern
+                (identifier))
+              (string
+                (string_fragment)))
+            (empty_statement))
+          (expression_statement
+            (assignment_expression
+              (pattern
+                (identifier))
+              (string
+                (string_fragment)))
+            (empty_statement))
+          (expression_statement
+            (assignment_expression
+              (pattern
+                (identifier))
+              (string
+                (string_fragment)))
+            (empty_statement)))))))
 
 
 
