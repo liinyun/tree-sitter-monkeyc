@@ -12,6 +12,7 @@ module.exports = grammar({
 
   extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/u],
 
+
   precedences: ($) => [
     [
       "member",
@@ -33,7 +34,7 @@ module.exports = grammar({
       "ternary",
     ],
     ["assign", $.primary_expression],
-    ["new", "call", $.expression],
+    ["member", "new", "call", $.expression],
     ["declaration", "literal"],
     [$.primary_expression, $.statement_block, "object"],
     [$.import_statement, $.import],
@@ -46,6 +47,12 @@ module.exports = grammar({
     $.declaration,
     $.expression,
     $.primary_expression,
+  ],
+
+
+  inline: $ => [
+    $._call_signature,
+    // $._expressions,
   ],
 
   rules: {
@@ -131,14 +138,21 @@ module.exports = grammar({
 
     // this is for name with dot
     dotted_name: ($) => prec(1, sep1($.identifier, ".")),
+    // without reserved, it would not parse a.b in If statement
+    member_expression: $ => prec('member', seq(
+      field('object', $.primary_expression),
+      '.',
+      field('property', alias($.identifier, $.property_identifier))),
+    ),
 
+    // TODO: I don't understand why can't I use attribute like what python does 
     attribute: ($) =>
       prec(
-        "call",
+        "member",
         seq(
           field("object", $.primary_expression),
           ".",
-          field("attribute", $.identifier),
+          field("property", $.identifier),
         ),
       ),
 
@@ -255,6 +269,11 @@ module.exports = grammar({
     // Expressions      expressions doesn't have ";" appended
     //
 
+    // _expressions: $ => choice(
+    //   $.expression,
+    //   $.sequence_expression,
+    // ),
+
     expression: ($) =>
       choice(
         $.primary_expression,
@@ -270,8 +289,8 @@ module.exports = grammar({
     primary_expression: ($) =>
       choice(
         $.identifier,
-        // $.dotted_name,
-        $.attribute,
+        // $.attribute,
+        $.member_expression,
         $.parenthesized_expression,
         $.this,
         $.super,
@@ -296,7 +315,7 @@ module.exports = grammar({
         ),
       ),
 
-    class_heritage: ($) => seq("extends", $.dotted_name),
+    class_heritage: ($) => seq("extends", $.expression),
 
     function_declaration: ($) =>
       prec.right(
@@ -315,7 +334,7 @@ module.exports = grammar({
     call_expression: ($) =>
       prec(
         "call",
-        seq(field("function", $.dotted_name), field("arguments", $.arguments)),
+        seq(field("function", $.primary_expression), field("arguments", $.arguments)),
       ),
 
     // NOTE: I do not fully get it through, but this does useful in monkeyc
@@ -334,7 +353,7 @@ module.exports = grammar({
       prec.right(
         "assign",
         seq(
-          field("left", choice($.parenthesized_expression, $.dotted_name)),
+          field("left", choice($.parenthesized_expression, $.pattern)),
           "=",
           field("right", $.expression),
         ),
@@ -347,7 +366,7 @@ module.exports = grammar({
       prec.right(
         "assign",
         seq(
-          field("left", $.dotted_name),
+          field("left", $.pattern),
           field(
             "operator",
             choice(
@@ -432,6 +451,8 @@ module.exports = grammar({
         ),
       ),
 
+    sequence_expression: $ => prec.right(commaSep1($.expression)),
+
     //
     // Primitives
     //
@@ -501,6 +522,13 @@ module.exports = grammar({
         field("property", $._property_name),
         optional($._initializer),
       ),
+
+
+    pattern: $ => choice(
+      $.identifier,
+      $.attribute,
+    ),
+
 
     formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),
 

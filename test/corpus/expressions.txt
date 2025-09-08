@@ -45,9 +45,15 @@ function init(a,b) {
 Property access
 ============================================
 x.someProperty;
-x[someVariable];
-x["some-string"];
 
+(program
+  (expression_statement
+    (dotted_name
+      (identifier)
+      (identifier))
+    (empty_statement)
+      ) 
+)
 
 
 
@@ -484,6 +490,8 @@ a <= b && c >= d;
 a && b(c) && d;
 a && b | c;
 a - b << c;
+
+a() + c.d;
 
 -----
 

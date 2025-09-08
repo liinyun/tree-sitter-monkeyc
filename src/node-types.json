@@ -60,10 +60,6 @@
         "named": true
       },
       {
-        "type": "attribute",
-        "named": true
-      },
-      {
         "type": "call_expression",
         "named": true
       },
@@ -73,6 +69,10 @@
       },
       {
         "type": "identifier",
+        "named": true
+      },
+      {
+        "type": "member_expression",
         "named": true
       },
       {
@@ -214,11 +214,11 @@
         "required": true,
         "types": [
           {
-            "type": "dotted_name",
+            "type": "parenthesized_expression",
             "named": true
           },
           {
-            "type": "parenthesized_expression",
+            "type": "pattern",
             "named": true
           }
         ]
@@ -239,22 +239,22 @@
     "type": "attribute",
     "named": true,
     "fields": {
-      "attribute": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      },
       "object": {
         "multiple": false,
         "required": true,
         "types": [
           {
             "type": "primary_expression",
+            "named": true
+          }
+        ]
+      },
+      "property": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
             "named": true
           }
         ]
@@ -270,7 +270,7 @@
         "required": true,
         "types": [
           {
-            "type": "dotted_name",
+            "type": "pattern",
             "named": true
           }
         ]
@@ -473,7 +473,7 @@
         "required": true,
         "types": [
           {
-            "type": "dotted_name",
+            "type": "primary_expression",
             "named": true
           }
         ]
@@ -567,7 +567,7 @@
       "required": true,
       "types": [
         {
-          "type": "dotted_name",
+          "type": "expression",
           "named": true
         }
       ]
@@ -827,6 +827,32 @@
     }
   },
   {
+    "type": "member_expression",
+    "named": true,
+    "fields": {
+      "object": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "primary_expression",
+            "named": true
+          }
+        ]
+      },
+      "property": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "property_identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "method_definition",
     "named": true,
     "fields": {
@@ -902,6 +928,25 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         }
       ]

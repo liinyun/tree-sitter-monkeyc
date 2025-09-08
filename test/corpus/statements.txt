@@ -89,7 +89,7 @@ if (x) {
   log(y);
 }
 
-if (a.b) {
+if (a.b == true) {
   log(c);
   d;
 }
@@ -101,24 +101,33 @@ if (a.b) {
   (if_statement
     condition: (parenthesized_expression
       (identifier))
-    consequence: (expression_statement
-      (call_expression
-        function: (identifier)
-        arguments: (arguments
-          (identifier)))))
+    consequence: 
+    (statement_block
+      (expression_statement
+        (call_expression
+          function: (dotted_name
+            (identifier)) 
+          arguments: (arguments
+            (identifier)))
+        (empty_statement))))
   (if_statement
     condition: (parenthesized_expression
       (member_expression
         object: (identifier)
-        property: (property_identifier)))
+        property: (identifier)))
+
     consequence: (statement_block
       (expression_statement
         (call_expression
-          function: (identifier)
+          function: (dotted_name
+            (identifier))
           arguments: (arguments
-            (identifier))))
+            (identifier)))
+          (empty_statement)
+            )
       (expression_statement
-        (identifier))))
+        (identifier)
+        (empty_statement))))
   )
 
 
