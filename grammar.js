@@ -12,7 +12,6 @@ module.exports = grammar({
 
   extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/u],
 
-
   precedences: ($) => [
     [
       "member",
@@ -49,8 +48,7 @@ module.exports = grammar({
     $.primary_expression,
   ],
 
-
-  inline: $ => [
+  inline: ($) => [
     $._call_signature,
     // $._expressions,
   ],
@@ -139,13 +137,17 @@ module.exports = grammar({
     // this is for name with dot
     dotted_name: ($) => prec(1, sep1($.identifier, ".")),
     // without reserved, it would not parse a.b in If statement
-    member_expression: $ => prec('member', seq(
-      field('object', $.primary_expression),
-      '.',
-      field('property', alias($.identifier, $.property_identifier))),
-    ),
+    member_expression: ($) =>
+      prec(
+        "member",
+        seq(
+          field("object", $.primary_expression),
+          ".",
+          field("property", alias($.identifier, $.property_identifier)),
+        ),
+      ),
 
-    // TODO: I don't understand why can't I use attribute like what python does 
+    // TODO: I don't understand why can't I use attribute like what python does
     attribute: ($) =>
       prec(
         "member",
@@ -237,8 +239,6 @@ module.exports = grammar({
 
     finally_clause: ($) => seq("finally", field("body", $.statement_block)),
 
-
-
     // these 4 will be used as $statement in for and other place
     break_statement: ($) => seq("break", ";"),
     continue_statement: ($) => seq("continue", ";"),
@@ -252,18 +252,27 @@ module.exports = grammar({
     //
 
     switch_body: ($) =>
-      seq("{", repeat($.switch_case), optional($.switch_default), "}"),
+      // seq(
+      //   "{",
+      //   field("cases", repeat($.switch_case)),
+      //   optional(field("default", $.switch_default)),
+      //   "}",
+      // ),
+      seq("{", repeat(choice($.switch_case, $.switch_default)), "}"),
+    // seq("{", repeat($.switch_case), optional($.switch_default), "}"),
 
     switch_case: ($) =>
-      seq(
-        "case",
-        field("value", $.expression),
-        ":",
-        field("body", repeat($.statement)),
+      prec.left(
+        seq(
+          "case",
+          field("value", $.expression),
+          ":",
+          field("body", repeat($.statement)),
+        ),
       ),
 
     switch_default: ($) =>
-      seq("default", ":", field("body", repeat($.statement))),
+      prec.right(seq("default", ":", field("body", repeat($.statement)))),
 
     parenthesized_expression: ($) => seq("(", $.expression, ")"),
     //
@@ -290,6 +299,7 @@ module.exports = grammar({
     primary_expression: ($) =>
       choice(
         $.identifier,
+        // $.identifier,
         // $.attribute,
         $.member_expression,
         $.parenthesized_expression,
@@ -316,15 +326,10 @@ module.exports = grammar({
           field("body", $.class_body),
         ),
       ),
-    modifiers: $ => repeat1(choice(
-      'public',
-      'protected',
-      'private',
-      'static',
-      'final',
-      'default',
-    )),
-
+    modifiers: ($) =>
+      repeat1(
+        choice("public", "protected", "private", "static", "final", "default"),
+      ),
 
     class_heritage: ($) => seq("extends", $.expression),
 
@@ -345,7 +350,10 @@ module.exports = grammar({
     call_expression: ($) =>
       prec(
         "call",
-        seq(field("function", $.primary_expression), field("arguments", $.arguments)),
+        seq(
+          field("function", $.primary_expression),
+          field("arguments", $.arguments),
+        ),
       ),
 
     // NOTE: I do not fully get it through, but this does useful in monkeyc
@@ -370,10 +378,7 @@ module.exports = grammar({
         ),
       ),
 
-    pattern: $ => choice(
-      $.identifier,
-      $.attribute,
-    ),
+    pattern: ($) => choice($.identifier, $.attribute),
 
     // _augmented_assignment_lhs: ($) =>
     //   choice($.identifier, $.parenthesized_expression),
@@ -467,7 +472,7 @@ module.exports = grammar({
         ),
       ),
 
-    sequence_expression: $ => prec.right(commaSep1($.expression)),
+    sequence_expression: ($) => prec.right(commaSep1($.expression)),
 
     //
     // Primitives
@@ -530,12 +535,13 @@ module.exports = grammar({
     arguments: ($) => seq("(", commaSep(optional($.expression)), ")"),
 
     class_body: ($) =>
-      seq("{", repeat(seq(field("member",
-        choice(
-          $.method_definition,
-          $.field_definition,
-        )
-      ))), "}"),
+      seq(
+        "{",
+        repeat(
+          seq(field("member", choice($.method_definition, $.field_definition))),
+        ),
+        "}",
+      ),
 
     field_definition: ($) =>
       seq(
@@ -543,8 +549,6 @@ module.exports = grammar({
         field("property", $._property_name),
         optional($._initializer),
       ),
-
-
 
     formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),
 
