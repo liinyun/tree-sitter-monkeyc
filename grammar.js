@@ -48,10 +48,19 @@ module.exports = grammar({
     $.primary_expression,
   ],
 
-  inline: ($) => [
-    $._call_signature,
-    // $._expressions,
+  conflicts: $ => [
+    [$.binary_expression, $.type],
   ],
+  // conflicts: $ => [
+  //   [$.primary_expression, $.pattern],
+  //   [$.switch_statement, $.primary_expression],
+  // ],
+
+
+  // inline: ($) => [
+  //   $._call_signature,
+  //   // $._expressions,
+  // ],
 
   rules: {
     program: ($) => repeat($.statement),
@@ -130,11 +139,11 @@ module.exports = grammar({
     _import_list: ($) => seq(commaSep1(field("name", $.dotted_name))),
     */
 
-    // don't need to use dotted_name for different name, because the name with "." is illegal
     using_statement: ($) =>
       seq("using", $.dotted_name, optional(seq("as", $.identifier)), ";"),
 
-    // this is for name with dot
+    // this can only be used in import_statement and using_statement
+    // it is designed just for these occasions, so I don't give it too much expressiveness nor precedence
     dotted_name: ($) => prec(1, sep1($.identifier, ".")),
     // without reserved, it would not parse a.b in If statement
     member_expression: ($) =>
@@ -143,7 +152,7 @@ module.exports = grammar({
         seq(
           field("object", $.primary_expression),
           ".",
-          field("property", alias($.identifier, $.property_identifier)),
+          field("property", $._property_name),
         ),
       ),
 
@@ -275,6 +284,37 @@ module.exports = grammar({
       prec.right(seq("default", ":", field("body", repeat($.statement)))),
 
     parenthesized_expression: ($) => seq("(", $.expression, ")"),
+
+    //
+    // Pattern
+    //
+
+    parameter: $ => choice(
+      $.identifier,
+      $.typed_parameter,
+    ),
+
+    typed_parameter: $ => prec(-1, seq(
+      $.identifier,
+      "as",
+      field('type', $.type),
+    )),
+    type: $ => choice(
+      prec(1, $.expression),
+      $.union_type,
+      $.constrained_type,
+      $.member_type,
+    ),
+    union_type: $ => prec.left(seq($.type, 'or', $.type)),
+    constrained_type: $ => prec.right(seq($.type, 'as', $.type)),
+    member_type: $ => seq($.type, '.', $.identifier),
+
+
+
+
+
+
+
     //
     // Expressions      expressions doesn't have ";" appended
     //
@@ -339,13 +379,15 @@ module.exports = grammar({
         seq(
           "function",
           field("name", $.identifier),
-          $._call_signature,
+          // $._call_signature,
+          // field("type_parameters", $.formal_parameters),
+          field("parameters", $.formal_parameters),
           field("body", $.statement_block),
         ),
       ),
 
     // Override
-    _call_signature: ($) => field("parameters", $.formal_parameters),
+    // _call_signature: ($) => field("parameters", $.formal_parameters),
 
     call_expression: ($) =>
       prec(
@@ -367,21 +409,27 @@ module.exports = grammar({
         ),
       ),
 
-    // I don't understand why choice
+    // both js and python uses pattern for left part.
+    // difference is that they uses _lhs_expression or _lhs_hand_side
+    // I don't know if it is needed, so I just extract the pattern 
+    // from those choice expressions it means an identifier or dotted_names
     assignment_expression: ($) =>
       prec.right(
         "assign",
         seq(
-          field("left", choice($.parenthesized_expression, $.pattern)),
+          field("left", $.pattern),
           "=",
           field("right", $.expression),
         ),
       ),
 
+    // the reason I use $.attribute instead of $.dotted_names here is 
+    // to emphasize the affiliation between $.identifier  
+    // and prec of dotted_names is too low. The left part of dotted_names lacks expressiveness power
     pattern: ($) => choice($.identifier, $.attribute),
 
     // _augmented_assignment_lhs: ($) =>
-    //   choice($.identifier, $.parenthesized_expression),
+    //   choice($.identifier, $.parenthesized_expression,$.member_expression,),
 
     augmented_assignment_expression: ($) =>
       prec.right(
@@ -552,7 +600,7 @@ module.exports = grammar({
         ";",
       ),
 
-    formal_parameters: ($) => seq("(", optional(commaSep1($.identifier)), ")"),
+    formal_parameters: ($) => seq("(", optional(commaSep1($.parameter)), ")"),
 
     method_definition: ($) =>
       seq(
@@ -563,6 +611,9 @@ module.exports = grammar({
         field("body", $.statement_block),
       ),
 
+    // the only reason I extract it is just to reuse it. 
+    // I don't know if it would occupy more resource
+    // TODO: test resource cause for this or learn the functionality
     _property_name: ($) => alias($.identifier, $.property_identifier),
 
     // _semicolon: ($) => choice($._automatic_semicolon, ";"),
