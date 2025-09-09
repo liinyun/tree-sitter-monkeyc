@@ -9,10 +9,15 @@ DONE:
 - [x] do-while statement
 - [x] import statement
 - [x] using statement
+- [x] type annotation for function parameter
 TODO:
 - [ ] symbol
-- [ ] type annotation
-
+- [ ] dictionary 
+- [ ] array
+- [ ] list 
+- [ ] tuple 
+- [ ] decorator 
+- [ ] type annotation for variable declaration
 
 
 

@@ -50,12 +50,12 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.binary_expression, $.type],
+    [$.primary_expression, $.pattern],
+    [$._property_name, $.attribute],
+    // [$.variable_declarator, $.pattern],
+    // [$._initializer, $.binary_expression],
+    // [$._initializer, $.update_expression],
   ],
-  // conflicts: $ => [
-  //   [$.primary_expression, $.pattern],
-  //   [$.switch_statement, $.primary_expression],
-  // ],
-
 
   // inline: ($) => [
   //   $._call_signature,
@@ -174,10 +174,19 @@ module.exports = grammar({
     expression_statement: ($) => seq($.expression, $.empty_statement),
 
     variable_declaration: ($) =>
-      seq(choice("var", "const"), $.variable_declarator, ";"),
+      seq(optional($.modifiers), choice("var", "const"), $.variable_declarator, ";"),
 
     variable_declarator: ($) =>
-      seq(field("name", $.identifier), optional($._initializer)),
+      seq(
+        field('name', $.identifier),
+        choice(
+          seq('=', field('right', $._initializer)),
+          seq('as', field('type', $.type)),
+          seq('as', field('type', $.type), '=', field('right', $._initializer)),
+        ),
+      ),
+
+    // seq(field("name", $.identifier), optional(field('type', $.type)), optional($._initializer)),
 
     // statement_block in monkeyc don't need to append ";"
     statement_block: ($) => seq("{", repeat($.statement), "}"),
@@ -382,6 +391,12 @@ module.exports = grammar({
           // $._call_signature,
           // field("type_parameters", $.formal_parameters),
           field("parameters", $.formal_parameters),
+          optional(
+            seq(
+              'as',
+              field('return_type', $.type),
+            ),
+          ),
           field("body", $.statement_block),
         ),
       ),

@@ -170,6 +170,10 @@
         "named": true
       },
       {
+        "type": "variable_declarator",
+        "named": true
+      },
+      {
         "type": "while_statement",
         "named": true
       }
@@ -827,6 +831,16 @@
             "named": true
           }
         ]
+      },
+      "return_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
       }
     }
   },
@@ -1427,9 +1441,13 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "modifiers",
+          "named": true
+        },
         {
           "type": "variable_declarator",
           "named": true
@@ -1447,6 +1465,30 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
             "named": true
           }
         ]

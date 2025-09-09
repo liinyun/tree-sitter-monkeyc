@@ -45,8 +45,31 @@ using Toybox.ActivityRecording as ActivityRecording;
 ============================================
 Variable declarations
 ============================================
-var x = 1;
+var x as FontResource = 1;
 private var _fullScreenRefresh as Boolean;
+
+--------
+(program
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (type
+        (assignment_expression
+          (pattern
+            (identifier))
+          (number)))))
+  (variable_declaration
+    (modifiers)
+    (variable_declarator
+      (identifier)
+      (type
+        (identifier)))))
+
+
+
+============================================
+Assignments
+============================================
 private var _font as FontResource?;
 private var _screenCenterPoint as Array<Number>?;
 var cos = Math.cos(angle);
@@ -59,21 +82,8 @@ var coords =
         [width / 2, -handLength] as Array<Number>,
         [width / 2, tailLength] as Array<Number>,
     ] as Array<Array<Number> >;
+
  
-
-(program
-  (variable_declaration
-    (variable_declarator
-      (identifier)
-      (number)))
- 
-)
-
-
-
-============================================
-Assignments
-============================================
 
 _fullScreenRefresh = true;
 _screenShape = System.getDeviceSettings().screenShape;
@@ -550,6 +560,36 @@ Empty statements
 
 
 
+============================================
+Print statements
+============================================
+print("hello");
+System.println(
+    "Average execution time: " + powerInfo.executionTimeAverage
+);
+ 
+-----
+(program
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments
+        (string
+          (string_fragment))))
+    (empty_statement))
+  (expression_statement
+    (call_expression
+      (member_expression
+        (identifier)
+        (property_identifier))
+      (arguments
+        (binary_expression
+          (string
+            (string_fragment))
+          (member_expression
+            (identifier)
+            (property_identifier)))))
+    (empty_statement)))
 
 
 
