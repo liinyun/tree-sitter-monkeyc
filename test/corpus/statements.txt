@@ -70,9 +70,6 @@ private var _fullScreenRefresh as Boolean;
 ============================================
 Assignments
 ============================================
-private var _font as FontResource?;
-private var _screenCenterPoint as Array<Number>?;
-var cos = Math.cos(angle);
 var x = coords[i][0] * cos - coords[i][1] * sin + 0.5;
 var result = new Array<Array<Float> >[4];
 var coords =
@@ -88,6 +85,15 @@ var coords =
 _fullScreenRefresh = true;
 _screenShape = System.getDeviceSettings().screenShape;
 
+-------
+
+
+============================================
+Assignment pass
+============================================
+private var _font as FontResource?;
+private var _screenCenterPoint as Array<Number>?;
+var cos = Math.cos(angle);
 
 
 

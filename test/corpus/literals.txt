@@ -23,6 +23,7 @@ Strings
 ==========================================
 "hello";
 "hello // \n commment \" ";
+"hello:s";
 
 ----
 (program
@@ -39,11 +40,27 @@ Strings
       (escape_sequence)
       (string_fragment)
       )
-    (empty_statement)
-  )
+       (empty_statement))
+      (expression_statement
+        (string
+          (string_fragment)) 
+        (empty_statement))
 )
 
 
 
 
+==========================================
+Symbol 
+==========================================
+status = :Work;
+
+----------
+(program
+  (expression_statement
+    (assignment_expression
+      (pattern
+        (identifier))
+      (symbol))
+    (empty_statement)))
 

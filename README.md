@@ -10,14 +10,17 @@ DONE:
 - [x] import statement
 - [x] using statement
 - [x] type annotation for function parameter
+- [x] type annotation for variable declaration
 TODO:
 - [ ] symbol
-- [ ] dictionary 
-- [ ] array
-- [ ] list 
-- [ ] tuple 
+- [x] dictionary 
+- [] array
 - [ ] decorator 
-- [ ] type annotation for variable declaration
+- [ ] annotation 
+- [ ] has operator 
+- [ ] ? at the end 
+
+
 
 
 

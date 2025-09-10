@@ -640,3 +640,50 @@ Non-breaking spaces as whitespace
 
 
 
+==============================================
+Dictionary
+==============================================
+var dict = { "a" => 1, "b" => 2 };  // Creates a dictionary
+
+-----
+(program
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (dictionary
+        (pair
+          (string
+            (string_fragment))
+          (number))
+        (pair
+          (string
+            (string_fragment))
+          (number)))))
+  (comment))
+
+
+
+==============================================
+Array
+==============================================
+var frogs as Array<Frogs>;
+
+var untypedArray = new [size];
+
+---------
+(program
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (type
+        (generic_type
+          (type_identifier)
+          (type_arguments
+            (type
+              (identifier)))))))
+    (variable_declaration
+      (variable_declarator
+        (identifier)
+        (new_expression
+          (array
+            (identifier))))))

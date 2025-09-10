@@ -48,10 +48,12 @@ module.exports = grammar({
     $.primary_expression,
   ],
 
-  conflicts: $ => [
+  conflicts: ($) => [
     [$.binary_expression, $.type],
     [$.primary_expression, $.pattern],
     [$._property_name, $.attribute],
+    [$.statement_block, $.dictionary],
+    [$.generic_type, $.primary_expression],
     // [$.variable_declarator, $.pattern],
     // [$._initializer, $.binary_expression],
     // [$._initializer, $.update_expression],
@@ -174,19 +176,22 @@ module.exports = grammar({
     expression_statement: ($) => seq($.expression, $.empty_statement),
 
     variable_declaration: ($) =>
-      seq(optional($.modifiers), choice("var", "const"), $.variable_declarator, ";"),
+      seq(
+        optional($.modifiers),
+        choice("var", "const"),
+        $.variable_declarator,
+        ";",
+      ),
 
     variable_declarator: ($) =>
       seq(
-        field('name', $.identifier),
+        field("name", $.identifier),
         choice(
-          seq('=', field('right', $._initializer)),
-          seq('as', field('type', $.type)),
-          seq('as', field('type', $.type), '=', field('right', $._initializer)),
+          seq("=", field("value", $.expression)),
+          seq("as", field("type", $.type)),
+          seq("as", field("type", $.type), "=", field("value", $.expression)),
         ),
       ),
-
-    // seq(field("name", $.identifier), optional(field('type', $.type)), optional($._initializer)),
 
     // statement_block in monkeyc don't need to append ";"
     statement_block: ($) => seq("{", repeat($.statement), "}"),
@@ -298,31 +303,49 @@ module.exports = grammar({
     // Pattern
     //
 
-    parameter: $ => choice(
-      $.identifier,
-      $.typed_parameter,
-    ),
+    parameter: ($) => choice($.identifier, $.typed_parameter),
 
-    typed_parameter: $ => prec(-1, seq(
-      $.identifier,
-      "as",
-      field('type', $.type),
-    )),
-    type: $ => choice(
-      prec(1, $.expression),
-      $.union_type,
-      $.constrained_type,
-      $.member_type,
-    ),
-    union_type: $ => prec.left(seq($.type, 'or', $.type)),
-    constrained_type: $ => prec.right(seq($.type, 'as', $.type)),
-    member_type: $ => seq($.type, '.', $.identifier),
+    typed_parameter: ($) =>
+      prec(-1, seq($.identifier, "as", field("type", $.type))),
+    type: ($) =>
+      choice(
+        prec(1, seq($.expression, optional("?"))),
+        $.union_type,
+        $.constrained_type,
+        $.member_type,
+        $.generic_type,
+        $.array_type,
+      ),
+    union_type: ($) => prec.left(seq($.type, "or", $.type)),
+    constrained_type: ($) => prec.right(seq($.type, "as", $.type)),
+    member_type: ($) => seq($.type, ".", $.identifier, optional("?")),
 
+    array_type: ($) =>
+      seq(field("element", $.type), field("dimensions", $.dimensions)),
 
+    dimensions: ($) => prec.right(repeat1(seq("[", $.identifier, "]"))),
 
+    // Array is solved by generic_type
+    generic_type: ($) =>
+      prec.dynamic(
+        10,
+        seq(
+          choice(alias($.identifier, $.type_identifier), $.attribute),
+          $.type_arguments,
+        ),
+      ),
 
+    type_arguments: ($) => seq("<", $.type, ">", optional("?")),
 
+    symbol: ($) => {
+      const alpha =
+        /[^\x00-\x1F\s\p{Zs}0-9:;`"'@#.,|^&<=>+\-*/\\%?!~()\[\]{}\uFEFF\u2060\u200B\u2028\u2029]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\}/u;
 
+      const alphanumeric =
+        /[^\x00-\x1F\s\p{Zs}:;`"'@#.,|^&<=>+\-*/\\%?!~()\[\]{}\uFEFF\u2060\u200B\u2028\u2029]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\}/u;
+      return token(seq(":", alpha, repeat(alphanumeric)));
+    },
+    // token(seq(":", $.identifier)),
 
     //
     // Expressions      expressions doesn't have ";" appended
@@ -360,9 +383,17 @@ module.exports = grammar({
         $.false,
         $.null,
         $.array,
+        $.dictionary,
+        $.symbol,
         $.call_expression,
       ),
     array: ($) => seq("[", commaSep(optional($.expression)), "]"),
+
+    dictionary: ($) =>
+      seq("{", optional(commaSep1($.pair)), optional(","), "}"),
+
+    pair: ($) =>
+      seq(field("key", $.expression), "=>", field("value", $.expression)),
 
     class_declaration: ($) =>
       prec(
@@ -391,12 +422,7 @@ module.exports = grammar({
           // $._call_signature,
           // field("type_parameters", $.formal_parameters),
           field("parameters", $.formal_parameters),
-          optional(
-            seq(
-              'as',
-              field('return_type', $.type),
-            ),
-          ),
+          optional(seq("as", field("return_type", $.type))),
           field("body", $.statement_block),
         ),
       ),
@@ -426,20 +452,16 @@ module.exports = grammar({
 
     // both js and python uses pattern for left part.
     // difference is that they uses _lhs_expression or _lhs_hand_side
-    // I don't know if it is needed, so I just extract the pattern 
+    // I don't know if it is needed, so I just extract the pattern
     // from those choice expressions it means an identifier or dotted_names
     assignment_expression: ($) =>
       prec.right(
         "assign",
-        seq(
-          field("left", $.pattern),
-          "=",
-          field("right", $.expression),
-        ),
+        seq(field("left", $.pattern), "=", field("right", $.expression)),
       ),
 
-    // the reason I use $.attribute instead of $.dotted_names here is 
-    // to emphasize the affiliation between $.identifier  
+    // the reason I use $.attribute instead of $.dotted_names here is
+    // to emphasize the affiliation between $.identifier
     // and prec of dotted_names is too low. The left part of dotted_names lacks expressiveness power
     pattern: ($) => choice($.identifier, $.attribute),
 
@@ -626,7 +648,7 @@ module.exports = grammar({
         field("body", $.statement_block),
       ),
 
-    // the only reason I extract it is just to reuse it. 
+    // the only reason I extract it is just to reuse it.
     // I don't know if it would occupy more resource
     // TODO: test resource cause for this or learn the functionality
     _property_name: ($) => alias($.identifier, $.property_identifier),
