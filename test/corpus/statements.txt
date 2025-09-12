@@ -54,10 +54,8 @@ private var _fullScreenRefresh as Boolean;
     (variable_declarator
       (identifier)
       (type
-        (assignment_expression
-          (pattern
-            (identifier))
-          (number)))))
+        (identifier))
+          (number)))
   (variable_declaration
     (modifiers)
     (variable_declarator
@@ -70,31 +68,127 @@ private var _fullScreenRefresh as Boolean;
 ============================================
 Assignments
 ============================================
-var x = coords[i][0] * cos - coords[i][1] * sin + 0.5;
-var result = new Array<Array<Float> >[4];
-var coords =
-    [
-        [-(width / 2), tailLength] as Array<Number>,
-        [-(width / 2), -handLength] as Array<Number>,
-        [width / 2, -handLength] as Array<Number>,
-        [width / 2, tailLength] as Array<Number>,
-    ] as Array<Array<Number> >;
-
- 
-
+var result = new Array<Array<Float>>[4];
 _fullScreenRefresh = true;
 _screenShape = System.getDeviceSettings().screenShape;
+var x = coords[i][0] * cos - coords[i][1] * sin + 0.5;
+private var _font as FontResource?;
+private var _screenCenterPoint as Array<Number>?;
+var cos = Math.cos(angle);
+var coords =
+    [
+        [-(width / 2), -handLength] as Array<Number>,
+        [width / 2, -handLength] as Array<Number>,
+    ] as Array<Array<Number> >;
 
--------
+ -------
+(program
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (new_expression
+        (array_access
+          (array_class
+            (array_class
+              (identifier)))
+          (number)))))
+  (expression_statement
+    (assignment_expression
+      (pattern
+        (identifier))
+      (true))
+    (empty_statement))
+  (expression_statement
+    (assignment_expression
+      (pattern
+        (identifier))
+      (member_expression
+        (call_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (arguments))
+        (property_identifier)))
+    (empty_statement))
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (binary_expression
+            (array_access
+              (array_access
+                (identifier)
+                (identifier))
+              (number))
+            (identifier))
+          (binary_expression
+            (array_access
+              (array_access
+                (identifier)
+                (identifier))
+              (number))
+            (identifier)))
+        (number))))
+  (variable_declaration
+    (modifiers)
+    (variable_declarator
+      (identifier)
+      (type
+        (identifier))))
+  (variable_declaration
+    (modifiers)
+    (variable_declarator
+      (identifier)
+      (type
+        (array_class
+          (identifier)))))
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (call_expression
+        (member_expression
+          (identifier)
+          (property_identifier))
+        (arguments
+          (identifier)))))
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (typed_array
+        (array
+          (typed_array
+            (array
+              (unary_expression
+                (parenthesized_expression
+                  (binary_expression
+                    (identifier)
+                    (number))))
+              (unary_expression
+                (identifier)))
+            (type
+              (array_class
+                (identifier))))
+          (typed_array
+            (array
+              (binary_expression
+                (identifier)
+                (number))
+              (unary_expression
+                (identifier)))
+            (type
+              (array_class
+                (identifier)))))
+        (type
+          (array_class
+            (array_class
+              (identifier))))))))
+
 
 
 ============================================
 Assignment pass
 ============================================
-private var _font as FontResource?;
-private var _screenCenterPoint as Array<Number>?;
-var cos = Math.cos(angle);
-
 
 
 ============================================
@@ -505,12 +599,12 @@ throw new Error("uh oh");
 (program
   (throw_statement
     (new_expression
-      (identifier)
-      (arguments
-        (string
-          (string_fragment))))))
-
-
+      (call_expression
+        (identifier)
+        (arguments
+          (string
+            (string_fragment)))))))
+ 
 
 
 ============================================

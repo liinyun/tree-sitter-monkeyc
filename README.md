@@ -12,13 +12,15 @@ DONE:
 - [x] type annotation for function parameter
 - [x] type annotation for variable declaration
 TODO:
-- [ ] symbol
+- [x] symbol
 - [x] dictionary 
-- [] array
+- [x] array
 - [ ] decorator 
 - [ ] annotation 
 - [ ] has operator 
-- [ ] ? at the end 
+- [x] ? at the end 
+
+- [ ] var result = new Array<Array<Float>>[4];   parse successfully but in a wrong way, it shouldn't be parsed as binary_expression
 
 
 

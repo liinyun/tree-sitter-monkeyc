@@ -34,10 +34,6 @@
         "named": true
       },
       {
-        "type": "new_expression",
-        "named": true
-      },
-      {
         "type": "primary_expression",
         "named": true
       },
@@ -60,6 +56,14 @@
         "named": true
       },
       {
+        "type": "array_access",
+        "named": true
+      },
+      {
+        "type": "array_class",
+        "named": true
+      },
+      {
         "type": "call_expression",
         "named": true
       },
@@ -77,6 +81,10 @@
       },
       {
         "type": "member_expression",
+        "named": true
+      },
+      {
+        "type": "new_expression",
         "named": true
       },
       {
@@ -109,6 +117,10 @@
       },
       {
         "type": "true",
+        "named": true
+      },
+      {
+        "type": "typed_array",
         "named": true
       }
     ]
@@ -214,6 +226,61 @@
     }
   },
   {
+    "type": "array_access",
+    "named": true,
+    "fields": {
+      "array": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "primary_expression",
+            "named": true
+          }
+        ]
+      },
+      "index": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "typed_parameter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "array_class",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "array_class",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "array_type",
     "named": true,
     "fields": {
@@ -259,32 +326,6 @@
         "types": [
           {
             "type": "expression",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "named": true,
-    "fields": {
-      "object": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "primary_expression",
-            "named": true
-          }
-        ]
-      },
-      "property": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
             "named": true
           }
         ]
@@ -913,7 +954,7 @@
       "required": true,
       "types": [
         {
-          "type": "attribute",
+          "type": "member_expression",
           "named": true
         },
         {
@@ -1013,10 +1054,6 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
           "type": "type",
           "named": true
         }
@@ -1092,10 +1129,6 @@
         "multiple": false,
         "required": true,
         "types": [
-          {
-            "type": "new_expression",
-            "named": true
-          },
           {
             "type": "primary_expression",
             "named": true
@@ -1173,11 +1206,11 @@
       "required": true,
       "types": [
         {
-          "type": "attribute",
+          "type": "identifier",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "member_expression",
           "named": true
         }
       ]
@@ -1403,15 +1436,15 @@
           "named": true
         },
         {
-          "type": "expression",
-          "named": true
-        },
-        {
           "type": "generic_type",
           "named": true
         },
         {
           "type": "member_type",
+          "named": true
+        },
+        {
+          "type": "primary_expression",
           "named": true
         },
         {
@@ -1431,6 +1464,32 @@
       "types": [
         {
           "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "typed_array",
+    "named": true,
+    "fields": {
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "array",
           "named": true
         }
       ]
@@ -1787,6 +1846,10 @@
   },
   {
     "type": "?",
+    "named": false
+  },
+  {
+    "type": "Array",
     "named": false
   },
   {

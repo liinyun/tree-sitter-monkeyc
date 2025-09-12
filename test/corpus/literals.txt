@@ -55,6 +55,20 @@ Symbol
 ==========================================
 status = :Work;
 
+_offscreenBuffer = new Graphics.BufferedBitmap({
+  :width => dc.getWidth(),
+  :palette => [
+    Graphics.COLOR_BLACK,
+    Graphics.COLOR_WHITE,
+  ] as Array<ColorValue>,
+});
+
+_dateBuffer = new Graphics.BufferedBitmap({
+    :width => dc.getWidth(),
+    :height => Graphics.getFontHeight(Graphics.FONT_MEDIUM),
+});
+
+ 
 ----------
 (program
   (expression_statement
@@ -62,5 +76,66 @@ status = :Work;
       (pattern
         (identifier))
       (symbol))
+    (empty_statement))
+  (expression_statement
+    (assignment_expression
+      (pattern
+        (identifier))
+      (new_expression
+        (call_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (arguments
+            (dictionary
+              (pair
+                (symbol)
+                (call_expression
+                  (member_expression
+                    (identifier)
+                    (property_identifier))
+                  (arguments)))
+              (pair
+                (symbol)
+                (typed_array
+                  (array
+                    (member_expression
+                      (identifier)
+                      (property_identifier))
+                    (member_expression
+                      (identifier)
+                      (property_identifier)))
+                  (type
+                    (array_class
+                      (identifier))))))))))
+    (empty_statement))
+  (expression_statement
+    (assignment_expression
+      (pattern
+        (identifier))
+      (new_expression
+        (call_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (arguments
+            (dictionary
+              (pair
+                (symbol)
+                (call_expression
+                  (member_expression
+                    (identifier)
+                    (property_identifier))
+                  (arguments)))
+              (pair
+                (symbol)
+                (call_expression
+                  (member_expression
+                    (identifier)
+                    (property_identifier))
+                  (arguments
+                    (member_expression
+                      (identifier)
+                      (property_identifier))))))))))
     (empty_statement)))
 
