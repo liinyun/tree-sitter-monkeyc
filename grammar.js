@@ -14,7 +14,7 @@ module.exports = grammar({
 
   precedences: ($) => [
     [
-      'member',
+      "member",
       "call",
       $.update_expression,
       "unary_void",
@@ -50,12 +50,13 @@ module.exports = grammar({
 
   conflicts: ($) => [
     // [$.primary_expression, $.pattern],
-    [$.statement_block, $.dictionary],
-    [$.generic_type, $.primary_expression],
+    // [$.statement_block, $.dictionary],
+    // [$.generic_type, $.primary_expression],
     // [$.array_access, $.expression],
-    [$.member_expression, $.type],
+    // [$.member_expression, $.type],
     [$.new_expression, $.primary_expression],
-    [$.call_expression, $.type],
+    // [$.array_class, $.primary_expression],
+    // [$.call_expression, $.type],
 
     // [$.variable_declarator, $.pattern],
     // [$._initializer, $.binary_expression],
@@ -162,8 +163,8 @@ module.exports = grammar({
       ),
 
     // TODO: I don't understand why can't I use attribute like what python does
-    // 
-    // member_expression and attribute has the same left and right part. So I comment attribute, I don't know why I use the two same thing. Maybe the unfamiliarity of the tree-sitter rules 
+    //
+    // member_expression and attribute has the same left and right part. So I comment attribute, I don't know why I use the two same thing. Maybe the unfamiliarity of the tree-sitter rules
     // attribute: ($) =>
     //   prec(
     //     "member",
@@ -191,11 +192,13 @@ module.exports = grammar({
     variable_declarator: ($) =>
       seq(
         field("name", $.identifier),
-        choice(
-          seq("=", field("value", $.expression)),
-          seq("as", field("type", $.type)),
-          seq("=", field("value", $.expression), "as", field("type", $.type)),
-          seq("as", field("type", $.type), "=", field("value", $.expression)),
+        optional(
+          choice(
+            seq("=", field("value", $.expression)),
+            seq("as", field("type", $.type)),
+            seq("=", field("value", $.expression), "as", field("type", $.type)),
+            seq("as", field("type", $.type), "=", field("value", $.expression)),
+          ),
         ),
       ),
 
@@ -271,7 +274,17 @@ module.exports = grammar({
     // these 4 will be used as $statement in for and other place
     break_statement: ($) => seq("break", ";"),
     continue_statement: ($) => seq("continue", ";"),
-    return_statement: ($) => seq("return", optional($.expression), ";"),
+    return_statement: ($) =>
+      seq(
+        "return",
+        optional(
+          choice(
+            field("value", $.expression),
+            seq(field("value", $.expression), "as", field("type", $.type)),
+          ),
+        ),
+        ";",
+      ),
     throw_statement: ($) => seq("throw", $.expression, ";"),
 
     empty_statement: (_) => ";",
@@ -315,8 +328,8 @@ module.exports = grammar({
       prec(-1, seq($.identifier, "as", field("type", $.type))),
     type: ($) =>
       choice(
-        prec(1, $.primary_expression),
-        seq($.primary_expression, "?"),
+        prec(1, $.identifier),
+        seq($.identifier, "?"),
         $.union_type,
         $.constrained_type,
         $.member_type,
@@ -332,41 +345,39 @@ module.exports = grammar({
 
     dimensions: ($) => prec.right(repeat1(seq("[", $.identifier, "]"))),
 
-
-    array_access: $ => seq(
-      field('array', $.primary_expression),
-      '[',
-      field('index', $.expression),
-      ']',
-      optional($.typed_parameter)
-    ),
-
+    // this is to be called
+    array_access: ($) =>
+      seq(
+        field("array", $.primary_expression),
+        "[",
+        field("index", $.expression),
+        "]",
+        optional($.typed_parameter),
+      ),
 
     // Array is solved by generic_type
     generic_type: ($) =>
-      prec.dynamic(
+      prec(
         10,
         seq(
-          choice(alias($.identifier, $.type_identifier), $.member_expression),
+          choice(alias($.identifier, $.type_identifier), $.member_type),
           $.type_arguments,
         ),
       ),
-
     type_arguments: ($) => prec.right(seq("<", $.type, ">", optional("?"))),
-    annotation: ($) =>
-      seq("(", $.annotation_keywords, ")"),
+    annotation: ($) => seq("(", $.annotation_keywords, ")"),
 
-    annotation_keywords: $ => choice(
-      ":debug",
-      ":test",
-      ":background",
-      ":glance",
-      ":release",
-      ":typecheck",
-      ":initialized",
-      ":extendedCode",
-    ),
-
+    annotation_keywords: ($) =>
+      choice(
+        ":debug",
+        ":test",
+        ":background",
+        ":glance",
+        ":release",
+        ":typecheck",
+        ":initialized",
+        ":extendedCode",
+      ),
 
     symbol: ($) => {
       const alpha =
@@ -382,11 +393,6 @@ module.exports = grammar({
     // Expressions      expressions doesn't have ";" appended
     //
 
-    // _expressions: $ => choice(
-    //   $.expression,
-    //   $.sequence_expression,
-    // ),
-
     expression: ($) =>
       choice(
         $.primary_expression,
@@ -394,14 +400,13 @@ module.exports = grammar({
         $.augmented_assignment_expression,
         $.unary_expression,
         $.binary_expression,
-        // $.ternary_expression,
+        $.ternary_expression,
         $.update_expression,
       ),
 
     primary_expression: ($) =>
       choice(
         $.identifier,
-        // $.identifier,
         // $.attribute,
         $.member_expression,
         $.new_expression,
@@ -422,11 +427,12 @@ module.exports = grammar({
         $.call_expression,
       ),
     array: ($) => seq("[", commaSep(optional($.expression)), "]"),
-    typed_array: ($) => prec.left(1, seq($.array, seq("as", field("type", $.type)))),
-    array_class: ($) => seq("Array", "<", choice($.identifier, $.array_class), ">"),
+    typed_array: ($) =>
+      prec.left(1, seq($.array, seq("as", field("type", $.type)))),
+    array_class: ($) => seq("Array", "<", choice($.type, $.array_class), ">"),
+    // array_class: ($) => seq("Array", "<", $.identifier, ">"),
 
-    dictionary: ($) =>
-      seq("{", optional(commaSep1($.pair)), optional(","), "}"),
+    dictionary: ($) => seq("{", commaSep1($.pair), optional(","), "}"),
 
     pair: ($) =>
       seq(field("key", $.expression), "=>", field("value", $.expression)),
@@ -451,19 +457,16 @@ module.exports = grammar({
     class_heritage: ($) => seq("extends", $.expression),
 
     function_declaration: ($) =>
-      prec.right(
+      prec.left(
         "declaration",
         seq(
           "function",
           field("name", $.identifier),
-          // $._call_signature,
-          // field("type_parameters", $.formal_parameters),
           field("parameters", $.formal_parameters),
-          optional(seq("as", field("return_type", $.type))),
+          optional(seq("as", $.type)),
           field("body", $.statement_block),
         ),
       ),
-
     // Override
     // _call_signature: ($) => field("parameters", $.formal_parameters),
 
@@ -494,7 +497,8 @@ module.exports = grammar({
     assignment_expression: ($) =>
       prec.right(
         "assign",
-        seq(field("left", $.pattern),
+        seq(
+          field("left", $.pattern),
           choice(
             seq("=", field("right", $.expression)),
             seq("=", field("right", $.expression), "as", field("type", $.type)),
@@ -505,7 +509,7 @@ module.exports = grammar({
     // the reason I use $.attribute instead of $.dotted_names here is
     // to emphasize the affiliation between $.identifier
     // and prec of dotted_names is too low. The left part of dotted_names lacks expressiveness power
-    pattern: ($) => choice($.identifier, $.member_expression),
+    pattern: ($) => choice($.identifier, $.member_expression, $.array_access),
 
     // _augmented_assignment_lhs: ($) =>
     //   choice($.identifier, $.parenthesized_expression,$.member_expression,),
@@ -600,7 +604,17 @@ module.exports = grammar({
         ),
       ),
 
-    sequence_expression: ($) => prec.right(commaSep1($.expression)),
+    ternary_expression: ($) =>
+      prec.right(
+        3,
+        seq(
+          field("condition", $.expression),
+          "?",
+          field("consequence", $.expression),
+          ":",
+          field("alternative", $.expression),
+        ),
+      ),
 
     //
     // Primitives
@@ -676,7 +690,14 @@ module.exports = grammar({
         optional($.modifiers),
         choice("var", "const"),
         field("property", $._property_name),
-        optional($._initializer),
+        optional(
+          choice(
+            seq("=", field("value", $.expression)),
+            seq("as", field("type", $.type)),
+            seq("=", field("value", $.expression), "as", field("type", $.type)),
+            seq("as", field("type", $.type), "=", field("value", $.expression)),
+          ),
+        ),
         ";",
       ),
 
@@ -689,6 +710,7 @@ module.exports = grammar({
         "function",
         field("name", $._property_name),
         field("parameters", $.formal_parameters),
+        optional(seq("as", field("return_type", $.type))),
         field("body", $.statement_block),
       ),
 

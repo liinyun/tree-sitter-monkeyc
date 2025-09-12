@@ -15,10 +15,12 @@ function init(a,b) {
         (typed_parameter
           (identifier)
           (type
-            (member_expression
-              (identifier)
-              (property_identifier)))))
-      (parameter
+            (member_type
+              (type
+                (identifier))
+              (type
+                (identifier))))))
+       (parameter
         (identifier)))
     (statement_block))
 
@@ -213,6 +215,7 @@ class Foo
 }
 
 ------
+
 (program
   (class_declaration
     (identifier)
@@ -252,6 +255,7 @@ class Foo
               (string
                 (string_fragment)))
             (empty_statement)))))))
+
 
 
 
@@ -447,16 +451,27 @@ Assignment
 x = 0;
 x.y = 0;
 
+result[i] =
+  [centerpoint[0] + x, centerpoint[1] + y] as array<float>;
+
+dc.fillPolygon(
+    [
+        [coords[i] - 1, 2] as Array<Float or Number>,
+        [upperX - 1, 12] as Array<Float or Number>,
+    ] as Array<Array<Float or Number> >
+);
+ 
+
+
+
 ------
 (program
   (expression_statement
     (assignment_expression
       (pattern
-        (identifier)
-      )
+        (identifier))
       (number))
-    (empty_statement)
-      )
+    (empty_statement))
   (expression_statement
     (assignment_expression
       (pattern
@@ -464,10 +479,89 @@ x.y = 0;
           (identifier)
           (property_identifier)))
       (number))
-      (empty_statement)
-      )
-)
- 
+    (empty_statement))
+  (expression_statement
+    (assignment_expression
+      (pattern
+        (array_access
+          (identifier)
+          (identifier)))
+      (typed_array
+        (array
+          (binary_expression
+            (array_access
+              (identifier)
+              (number))
+            (identifier))
+          (binary_expression
+            (array_access
+              (identifier)
+              (number))
+            (identifier)))
+        (type
+          (generic_type
+            (type_identifier)
+            (type_arguments
+              (type
+                (identifier)))))))
+    (empty_statement))
+  (expression_statement
+    (call_expression
+      (member_expression
+        (identifier)
+        (property_identifier))
+      (arguments
+        (typed_array
+          (array
+            (typed_array
+              (array
+                (binary_expression
+                  (array_access
+                    (identifier)
+                    (identifier))
+                  (number))
+                (number))
+              (type
+                (generic_type
+                  (type_identifier)
+                  (type_arguments
+                    (type
+                      (union_type
+                        (type
+                          (identifier))
+                        (type
+                          (identifier))))))))
+            (typed_array
+              (array
+                (binary_expression
+                  (identifier)
+                  (number))
+                (number))
+              (type
+                (generic_type
+                  (type_identifier)
+                  (type_arguments
+                    (type
+                      (union_type
+                        (type
+                          (identifier))
+                        (type
+                          (identifier)))))))))
+          (type
+            (generic_type
+              (type_identifier)
+              (type_arguments
+                (type
+                  (generic_type
+                    (type_identifier)
+                    (type_arguments
+                      (type
+                        (union_type
+                          (type
+                            (identifier))
+                          (type
+                            (identifier)))))))))))))
+    (empty_statement)))
 
 ==============================================
 Ternaries
@@ -621,6 +715,21 @@ if (System.getDeviceSettings() has :doNotDisturb) {
           (empty_statement))))))
 
 
+============================================
+Ternary operators
+============================================
+var result = a ? 1 : 2;
+-----
+(program
+  (variable_declaration
+    (variable_declarator
+      (identifier)
+      (ternary_expression
+        (identifier)
+        (number)
+        (number)))))
+
+
 
 ==============================================
 Operator precedence
@@ -752,35 +861,55 @@ var dict = { "a" => 1, "b" => 2 };  // Creates a dictionary
   (comment))
 
 
+==============================================
+Array to be tested
+==============================================
+function getExprs() as Array<Array> {
+    return (
+        [
+            [4, 1 << (2 % 3)],
+            [1, (1 << 2) % 3],
+            [true, (4 + 5) instanceof Lang.Number],
+            [true, ((4 + 5) has :toString) as Boolean],
+            [[[2, 3], [-1, 4]], { 1 ? 2 : 3 => 3, -1 => 4 }],
+            [true, 4e0 instanceof Lang.Float],
+            [true, true as Boolean ? true : false],
+            [false, null as Boolean? ? true : false],
+            [NaN, getNaN()],
+            [0x4l, 4l],
+            [04l, 4l],
+        ] as Array<Array>
+    );
+}
+
+var d = [[[2, 3], [-1, 4]], { 1 ? 2 : 3 => 3, -1 => 4 }];
+var e = [true, 4e0 instanceof Lang.Float];
+var f = [true, true as Boolean ? true : false];
+var g = [false, null as Boolean? ? true : false];
+var h = [NaN, getNaN()];
+ 
+
+==============================================
+Array passed
+==============================================
+
+var frogs as Array<Frogs>;
+var result = new Array<Array<Float>>[4];
+var untypedArray = new [size];
+var a = [ [4, 1 << (2 % 3)],
+[1, (1 << 2) % 3]] as Array<Array>;
+
+var b = [true, (4 + 5) instanceof Lang.Number];
+
+
 
 ==============================================
 Array
 ==============================================
-var frogs as Array<Frogs>;
-var result = new Array<Array<Float>>[4];
-var untypedArray = new [size];
+var c = [true, ((4 + 5) has :toString) as Boolean];
+
+
+
 
 ---------
-(program
-  (variable_declaration
-    (variable_declarator
-      (identifier)
-      (type
-        (array_class  
-          (identifier)))))
-    (variable_declaration
-      (variable_declarator
-        (identifier)
-        (new_expression
-          (array_access
-            (array_class
-              (array_class
-                (identifier)))
-            (number)))))
-      (variable_declaration
-        (variable_declarator
-          (identifier)
-          (new_expression
- 
-          (array
-            (identifier))))))
+
