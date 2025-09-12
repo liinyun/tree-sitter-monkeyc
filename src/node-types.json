@@ -329,6 +329,16 @@
             "named": true
           }
         ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
       }
     }
   },
@@ -488,6 +498,10 @@
           },
           {
             "type": "and",
+            "named": false
+          },
+          {
+            "type": "has",
             "named": false
           },
           {
@@ -1943,6 +1957,10 @@
   },
   {
     "type": "function",
+    "named": false
+  },
+  {
+    "type": "has",
     "named": false
   },
   {

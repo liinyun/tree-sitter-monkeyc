@@ -532,6 +532,68 @@ async += 1;
       )
 )
 
+============================================
+Has operators
+============================================
+_partialUpdatesAllowed = WatchUi.WatchFace has :onPartialUpdate;
+if (System.getDeviceSettings() has :doNotDisturb) {
+    _dndIcon =
+        WatchUi.loadResource($.Rez.Drawables.DoNotDisturbIcon) as
+        BitmapResource;
+} else {
+    _dndIcon = null;
+}
+
+-----
+(program
+  (expression_statement
+    (assignment_expression
+      (pattern
+        (identifier))
+      (binary_expression
+        (member_expression
+          (identifier)
+          (property_identifier))
+        (symbol)))
+    (empty_statement))
+  (if_statement
+    (parenthesized_expression
+      (binary_expression
+        (call_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (arguments))
+        (symbol)))
+    (statement_block
+      (expression_statement
+        (assignment_expression
+          (pattern
+            (identifier))
+          (call_expression
+            (member_expression
+              (identifier)
+              (property_identifier))
+            (arguments
+              (member_expression
+                (member_expression
+                  (member_expression
+                    (identifier)
+                    (property_identifier))
+                  (property_identifier))
+                (property_identifier))))
+          (type
+            (identifier)))
+        (empty_statement)))
+    (else_clause
+      (statement_block
+        (expression_statement
+          (assignment_expression
+            (pattern
+              (identifier))
+            (null))
+          (empty_statement))))))
+
 
 
 ==============================================

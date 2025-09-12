@@ -194,6 +194,7 @@ module.exports = grammar({
         choice(
           seq("=", field("value", $.expression)),
           seq("as", field("type", $.type)),
+          seq("=", field("value", $.expression), "as", field("type", $.type)),
           seq("as", field("type", $.type), "=", field("value", $.expression)),
         ),
       ),
@@ -478,7 +479,12 @@ module.exports = grammar({
     assignment_expression: ($) =>
       prec.right(
         "assign",
-        seq(field("left", $.pattern), "=", field("right", $.expression)),
+        seq(field("left", $.pattern),
+          choice(
+            seq("=", field("right", $.expression)),
+            seq("=", field("right", $.expression), "as", field("type", $.type)),
+          ),
+        ),
       ),
 
     // the reason I use $.attribute instead of $.dotted_names here is
@@ -541,6 +547,7 @@ module.exports = grammar({
           [">=", "binary_relation"],
           [">", "binary_relation"],
           ["instanceof", "binary_relation"],
+          ["has", "binary_relation"],
         ].map(([operator, precedence]) =>
           prec.left(
             precedence,
