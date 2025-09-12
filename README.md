@@ -16,10 +16,11 @@ TODO:
 - [x] dictionary 
 - [x] array
 - [ ] decorator 
-- [ ] annotation 
+- [x] annotation 
 - [x] has operator 
 - [ ] precedence of has operator and instanceof operator 
 - [x] ? at the end 
+- [] ternary operator 
 
 - [ ] var result = new Array<Array<Float>>[4];   parse successfully but in a wrong way, it shouldn't be parsed as binary_expression
 

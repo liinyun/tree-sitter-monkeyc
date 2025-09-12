@@ -353,6 +353,20 @@ module.exports = grammar({
       ),
 
     type_arguments: ($) => prec.right(seq("<", $.type, ">", optional("?"))),
+    annotation: ($) =>
+      seq("(", $.annotation_keywords, ")"),
+
+    annotation_keywords: $ => choice(
+      ":debug",
+      ":test",
+      ":background",
+      ":glance",
+      ":release",
+      ":typecheck",
+      ":initialized",
+      ":extendedCode",
+    ),
+
 
     symbol: ($) => {
       const alpha =
@@ -421,6 +435,7 @@ module.exports = grammar({
       prec(
         "declaration",
         seq(
+          optional($.annotation),
           optional($.modifiers),
           "class",
           field("name", $.identifier),
@@ -669,6 +684,7 @@ module.exports = grammar({
 
     method_definition: ($) =>
       seq(
+        optional($.annotation),
         optional($.modifiers),
         "function",
         field("name", $._property_name),

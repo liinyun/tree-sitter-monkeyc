@@ -144,6 +144,12 @@ class StopMenuDelegate {
 		MenuInputDelegate.initializ();
 	}
 }
+(:debug) class TestMethods
+{
+    (:test) static function testThisClass( x ) {
+      System.println(x);
+    }
+}
 
 -----
 (program
@@ -160,11 +166,31 @@ class StopMenuDelegate {
               (identifier)
               (property_identifier))
             (arguments))
-            (empty_statement))) 
-      )  
-    )
+            (empty_statement))))))
+  (class_declaration
+    (annotation
+      (annotation_keywords))
+    (identifier)
+    (class_body
+      (method_definition
+        (annotation
+          (annotation_keywords))
+        (modifiers)
+        (property_identifier)
+        (formal_parameters
+          (parameter
+            (identifier)))
+        (statement_block
+          (expression_statement
+            (call_expression
+              (member_expression
+                (identifier)
+                (property_identifier))
+              (arguments
+                (identifier)))
 
-  )
+        (empty_statement))))))
+
 )
 
 

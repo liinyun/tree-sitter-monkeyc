@@ -1218,6 +1218,60 @@
         ]
       }
     },
+    "annotation": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "annotation_keywords"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "annotation_keywords": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ":debug"
+        },
+        {
+          "type": "STRING",
+          "value": ":test"
+        },
+        {
+          "type": "STRING",
+          "value": ":background"
+        },
+        {
+          "type": "STRING",
+          "value": ":glance"
+        },
+        {
+          "type": "STRING",
+          "value": ":release"
+        },
+        {
+          "type": "STRING",
+          "value": ":typecheck"
+        },
+        {
+          "type": "STRING",
+          "value": ":initialized"
+        },
+        {
+          "type": "STRING",
+          "value": ":extendedCode"
+        }
+      ]
+    },
     "symbol": {
       "type": "TOKEN",
       "content": {
@@ -1560,6 +1614,18 @@
       "content": {
         "type": "SEQ",
         "members": [
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "annotation"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
           {
             "type": "CHOICE",
             "members": [
@@ -3285,6 +3351,18 @@
     "method_definition": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "annotation"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
         {
           "type": "CHOICE",
           "members": [
