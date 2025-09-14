@@ -51,13 +51,68 @@ function init(a,b) {
 )
 
 
-============================================
-Function test
-============================================
 
+==============================================
+Method to be tested
+==============================================
+
+function methodTest2(m as Method(x as Number) as Null or Method(x as String) as Void, p as Number, s as String) as Void {
+    var m2 = m.invoke(p);
+    if (m2) {
+        m2.invoke(s);
+    }
+}
+
+
+(:test)
+function runTests(logger as Logger) as Boolean {
+    var tests = getExprs();
+    var ok = true;
+    for (var i = 0; i < tests.size(); i++) {
+        if (
+            !check(
+                logger,
+                i as Number /* :: Flow Comment Shouldn't break the printer */,
+                tests[i][0],
+                tests[i][1]
+            )
+        ) {
+            ok = false;
+        }
+    }
+
+    (new MethodTests()).tests();
+    return ok;
+}
+
+
+
+// checking that comments in odd places don't crash
+// the formatter.
+(/*bar*/ :background_app /*baz*/) // boo
+// biz
+module Bar {
+    typedef /* foo */ Foo as Number;
+}
+
+
+
+============================================
+Method pass
+============================================
 function num3(x as Number) as Method(x as String) as Void {
     System.println(x);
     return method(:str);
+}
+
+
+
+============================================
+Method test
+============================================
+
+function methodTest1(m as Method(x as Number) as Void or Method(x as String) as Void, p as Number or String) as Void {
+    (m as Method(x as Number) as Void).invoke(p);
 }
 
 ------
@@ -874,26 +929,6 @@ var dict = { "a" => 1, "b" => 2 };  // Creates a dictionary
   (comment))
 
 
-==============================================
-Array to be tested
-==============================================
-function getExprs() as Array<Array> {
-    return (
-        [
-            [4, 1 << (2 % 3)],
-            [1, (1 << 2) % 3],
-            [true, (4 + 5) instanceof Lang.Number],
-            [true, ((4 + 5) has :toString) as Boolean],
-            [[[2, 3], [-1, 4]], { 1 ? 2 : 3 => 3, -1 => 4 }],
-            [true, 4e0 instanceof Lang.Float],
-            [true, true as Boolean ? true : false],
-            [false, null as Boolean? ? true : false],
-            [NaN, getNaN()],
-            [0x4l, 4l],
-            [04l, 4l],
-        ] as Array<Array>
-    );
-}
 
  
 
@@ -931,14 +966,30 @@ var a = [ [4, 1 << (2 % 3)],
 [NaN, getNaN()],
 ] as Array<Array>;
 
+function getExprs() as Array<Array> {
+  return (
+      [
+          [4, 1 << (2 % 3)],
+          [1, (1 << 2) % 3],
+          [true, (4 + 5) instanceof Lang.Number],
+          [true, ((4 + 5) has :toString) as Boolean],
+          [[[2, 3], [-1, 4]], { 1 ? 2 : 3 => 3, -1 => 4 }],
+          [true, 4e0 instanceof Lang.Float],
+          [true, true as Boolean ? true : false],
+          [false, null as Boolean? ? true : false],
+          [NaN, getNaN()],
+          [0x4l, 4l],
+          [04l, 4l],
+      ] as Array<Array>
+  );
+}
+
 
 
 ==============================================
 Array
 ==============================================
-var i = [0x4l, 4l];
-var j = [04l, 4l];
- 
 
----------
+
+
 

@@ -336,6 +336,7 @@ module.exports = grammar({
         $.member_type,
         $.generic_type,
         $.array_type,
+        $.method_function,
       ),
     union_type: ($) => prec.left(seq($.type, "or", $.type)),
     // constrained_type: ($) => prec.right(seq($.type, "as", $.type)),
@@ -777,6 +778,10 @@ module.exports = grammar({
         field("parameters", $.formal_parameters),
         optional(seq("as", field("return_type", $.type))),
         field("body", $.statement_block),
+      ),
+    method_function: ($) =>
+      prec.left(
+        seq("Method", $.formal_parameters, optional(seq("as", $.type))),
       ),
 
     // the only reason I extract it is just to reuse it.

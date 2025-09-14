@@ -1200,6 +1200,25 @@
     }
   },
   {
+    "type": "method_function",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "formal_parameters",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "modifiers",
     "named": true,
     "fields": {}
@@ -1599,6 +1618,10 @@
         },
         {
           "type": "member_type",
+          "named": true
+        },
+        {
+          "type": "method_function",
           "named": true
         },
         {
@@ -2044,6 +2067,10 @@
   },
   {
     "type": "Array",
+    "named": false
+  },
+  {
+    "type": "Method",
     "named": false
   },
   {
