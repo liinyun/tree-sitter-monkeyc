@@ -14,6 +14,7 @@ module.exports = grammar({
 
   precedences: ($) => [
     [
+      $.parenthesized_expression,
       "member",
       "call",
       $.update_expression,
@@ -25,6 +26,7 @@ module.exports = grammar({
       "binary_compare",
       "binary_relation",
       "binary_equality",
+      "binary_has",
       "bitwise_and",
       "bitwise_xor",
       "bitwise_or",
@@ -52,10 +54,9 @@ module.exports = grammar({
     // [$.primary_expression, $.pattern],
     // [$.statement_block, $.dictionary],
     // [$.generic_type, $.primary_expression],
-    // [$.array_access, $.expression],
     // [$.member_expression, $.type],
     [$.new_expression, $.primary_expression],
-    // [$.array_class, $.primary_expression],
+    [$.array, $.primary_expression],
     // [$.call_expression, $.type],
 
     // [$.variable_declarator, $.pattern],
@@ -329,7 +330,7 @@ module.exports = grammar({
     type: ($) =>
       choice(
         prec(1, $.identifier),
-        seq($.identifier, "?"),
+        $.type_null,
         $.union_type,
         $.constrained_type,
         $.member_type,
@@ -337,25 +338,27 @@ module.exports = grammar({
         $.array_type,
       ),
     union_type: ($) => prec.left(seq($.type, "or", $.type)),
+    // constrained_type: ($) => prec.right(seq($.type, "as", $.type)),
     constrained_type: ($) => prec.right(seq($.type, "as", $.type)),
     member_type: ($) => prec.left(seq($.type, ".", $.type)),
 
     array_type: ($) =>
       seq(field("element", $.type), field("dimensions", $.dimensions)),
 
-    dimensions: ($) => prec.right(repeat1(seq("[", $.identifier, "]"))),
+    dimensions: ($) => prec.right(repeat1(seq("[", $.expression, "]"))),
 
     // this is to be called
     array_access: ($) =>
-      seq(
-        field("array", $.primary_expression),
-        "[",
-        field("index", $.expression),
-        "]",
-        optional($.typed_parameter),
+      prec.left(
+        seq(
+          field("array", $.primary_expression),
+          "[",
+          field("index", $.expression),
+          "]",
+          optional($.typed_parameter),
+        )
       ),
 
-    // Array is solved by generic_type
     generic_type: ($) =>
       prec(
         10,
@@ -387,6 +390,15 @@ module.exports = grammar({
         /[^\x00-\x1F\s\p{Zs}:;`"'@#.,|^&<=>+\-*/\\%?!~()\[\]{}\uFEFF\u2060\u200B\u2028\u2029]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\}/u;
       return token(seq(":", alpha, repeat(alphanumeric)));
     },
+    type_null: ($) => {
+      const alpha =
+        /[^\x00-\x1F\s\p{Zs}0-9:;`"'@#.,|^&<=>+\-*/\\%?!~()\[\]{}\uFEFF\u2060\u200B\u2028\u2029]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\}/u;
+
+      const alphanumeric =
+        /[^\x00-\x1F\s\p{Zs}:;`"'@#.,|^&<=>+\-*/\\%?!~()\[\]{}\uFEFF\u2060\u200B\u2028\u2029]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\}/u;
+      return token(seq(alpha, repeat(alphanumeric), "?"));
+    },
+
     // token(seq(":", $.identifier)),
 
     //
@@ -407,6 +419,7 @@ module.exports = grammar({
     primary_expression: ($) =>
       choice(
         $.identifier,
+        $.type_null,
         // $.attribute,
         $.member_expression,
         $.new_expression,
@@ -426,7 +439,18 @@ module.exports = grammar({
         $.symbol,
         $.call_expression,
       ),
-    array: ($) => seq("[", commaSep(optional($.expression)), "]"),
+    array_unit: ($) => seq($.expression, optional(seq("as", $.type))),
+    // array: ($) => seq("[", commaSep(optional($.expression)), optional(seq("as", $.identifier)), "]"),
+    // typed_identifier: ($) => seq($.identifier, "as", $.type),
+    array: ($) => seq("[", commaSep(optional(choice($.array_unit, $.array))), "]"),
+    return_type: ($) =>
+      choice(
+        $.identifier,
+        seq($.identifier, "?"),
+      ),
+    return_typed_parameter: ($) =>
+      prec(-1, seq($.identifier, "as", field("type", $.return_type))),
+
     typed_array: ($) =>
       prec.left(1, seq($.array, seq("as", field("type", $.type)))),
     array_class: ($) => seq("Array", "<", choice($.type, $.array_class), ">"),
@@ -566,7 +590,7 @@ module.exports = grammar({
           [">=", "binary_relation"],
           [">", "binary_relation"],
           ["instanceof", "binary_relation"],
-          ["has", "binary_relation"],
+          ["has", "binary_has"],
         ].map(([operator, precedence]) =>
           prec.left(
             precedence,
@@ -583,7 +607,7 @@ module.exports = grammar({
       prec.left(
         "unary_void",
         seq(
-          field("operator", choice("!", "~", "-", "+", "instanceof")),
+          field("operator", choice("!", "~", "-", "+", "instanceof", "as")),
           field("argument", $.expression),
         ),
       ),
@@ -606,9 +630,9 @@ module.exports = grammar({
 
     ternary_expression: ($) =>
       prec.right(
-        3,
         seq(
           field("condition", $.expression),
+          optional(seq("as", $.type)),
           "?",
           field("consequence", $.expression),
           ":",
@@ -644,7 +668,15 @@ module.exports = grammar({
     escape_sequence: (_) => token.immediate(/\\['"ntr\\u]/),
 
     number: (_) => {
+      const hexLiteral = seq(
+        choice('0x', '0X'),
+        /[\da-fA-F](_?[\da-fA-F])*/,
+      );
+
       const decimalDigits = /\d+/;
+
+      const signedInteger = seq(optional(choice('-', '+')), decimalDigits);
+      const exponentPart = seq(choice('e', 'E'), signedInteger);
       const decimalIntegerLiteral = choice(
         "0",
         seq(
@@ -655,13 +687,14 @@ module.exports = grammar({
       );
 
       const decimalLiteral = choice(
-        seq(decimalIntegerLiteral, ".", optional(decimalDigits)),
-        seq(".", decimalDigits),
-        decimalIntegerLiteral,
+        seq(decimalIntegerLiteral, '.', optional(decimalDigits), optional(exponentPart)),
+        seq('.', decimalDigits, optional(exponentPart)),
+        seq(decimalIntegerLiteral, exponentPart),
         decimalDigits,
       );
 
-      return token(choice(decimalLiteral));
+
+      return token(choice(hexLiteral, decimalLiteral));
     },
 
     this: (_) => "this",

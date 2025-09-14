@@ -882,11 +882,6 @@ function getExprs() as Array<Array> {
     );
 }
 
-var d = [[[2, 3], [-1, 4]], { 1 ? 2 : 3 => 3, -1 => 4 }];
-var e = [true, 4e0 instanceof Lang.Float];
-var f = [true, true as Boolean ? true : false];
-var g = [false, null as Boolean? ? true : false];
-var h = [NaN, getNaN()];
  
 
 ==============================================
@@ -896,18 +891,30 @@ Array passed
 var frogs as Array<Frogs>;
 var result = new Array<Array<Float>>[4];
 var untypedArray = new [size];
+
 var a = [ [4, 1 << (2 % 3)],
 [1, (1 << 2) % 3]] as Array<Array>;
 
 var b = [true, (4 + 5) instanceof Lang.Number];
-
+var c = [true, ((4 + 5) has :toString) as Boolean];
+var d_1 = [[2, 3], [-1, 4]];
+var d_2 = { 1 ? 2 : 3 => 3, -1 => 4 }; 
+var d = [[[2, 3], [-1, 4]], { 1 ? 2 : 3 => 3, -1 => 4 }];
+var f_1 = true as Boolean ? true : false ; 
+var f = [true, true as Boolean ? true : false];
+var g = [false, null as Boolean? ? true : false];
+var e = [true, 4e0 instanceof Lang.Float];
+var h = [NaN, getNaN()];
 
 
 ==============================================
 Array
 ==============================================
-var c = [true, ((4 + 5) has :toString) as Boolean];
+var a = [ [4, 1 << (2 % 3)],
+[1, (1 << 2) % 3]
+var b = [true, (4 + 5) instanceof Lang.Number];
 
+] as Array<Array>;
 
 
 
