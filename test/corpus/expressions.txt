@@ -52,6 +52,19 @@ function init(a,b) {
 
 
 ============================================
+Function test
+============================================
+
+function num3(x as Number) as Method(x as String) as Void {
+    System.println(x);
+    return method(:str);
+}
+
+------
+
+
+
+============================================
 Property access
 ============================================
 x.someProperty;
@@ -907,16 +920,25 @@ var e = [true, 4e0 instanceof Lang.Float];
 var h = [NaN, getNaN()];
 
 
-==============================================
-Array
-==============================================
-var a = [ [4, 1 << (2 % 3)],
-[1, (1 << 2) % 3]
-var b = [true, (4 + 5) instanceof Lang.Number];
 
+var a = [ [4, 1 << (2 % 3)],
+[1, (1 << 2) % 3],
+[true, (4 + 5) instanceof Lang.Number],
+[[[2, 3], [-1, 4]], { 1 ? 2 : 3 => 3, -1 => 4 }],
+[true, 4e0 instanceof Lang.Float],
+[true, true as Boolean ? true : false],
+[false, null as Boolean? ? true : false],
+[NaN, getNaN()],
 ] as Array<Array>;
 
 
+
+==============================================
+Array
+==============================================
+var i = [0x4l, 4l];
+var j = [04l, 4l];
+ 
 
 ---------
 

@@ -356,7 +356,7 @@ module.exports = grammar({
           field("index", $.expression),
           "]",
           optional($.typed_parameter),
-        )
+        ),
       ),
 
     generic_type: ($) =>
@@ -428,6 +428,8 @@ module.exports = grammar({
         $.this,
         $.super,
         $.number,
+        // $.integer,
+        // $.float,
         $.string,
         $.true,
         $.false,
@@ -442,12 +444,9 @@ module.exports = grammar({
     array_unit: ($) => seq($.expression, optional(seq("as", $.type))),
     // array: ($) => seq("[", commaSep(optional($.expression)), optional(seq("as", $.identifier)), "]"),
     // typed_identifier: ($) => seq($.identifier, "as", $.type),
-    array: ($) => seq("[", commaSep(optional(choice($.array_unit, $.array))), "]"),
-    return_type: ($) =>
-      choice(
-        $.identifier,
-        seq($.identifier, "?"),
-      ),
+    array: ($) =>
+      seq("[", commaSep(optional(choice($.array_unit, $.array))), "]"),
+    return_type: ($) => choice($.identifier, seq($.identifier, "?")),
     return_typed_parameter: ($) =>
       prec(-1, seq($.identifier, "as", field("type", $.return_type))),
 
@@ -668,15 +667,12 @@ module.exports = grammar({
     escape_sequence: (_) => token.immediate(/\\['"ntr\\u]/),
 
     number: (_) => {
-      const hexLiteral = seq(
-        choice('0x', '0X'),
-        /[\da-fA-F](_?[\da-fA-F])*/,
-      );
+      const hexLiteral = seq(choice("0x", "0X"), /[\da-fA-F](_?[\da-fA-F])*/);
 
       const decimalDigits = /\d+/;
 
-      const signedInteger = seq(optional(choice('-', '+')), decimalDigits);
-      const exponentPart = seq(choice('e', 'E'), signedInteger);
+      const signedInteger = seq(optional(choice("-", "+")), decimalDigits);
+      const exponentPart = seq(choice("e", "E"), signedInteger);
       const decimalIntegerLiteral = choice(
         "0",
         seq(
@@ -687,14 +683,50 @@ module.exports = grammar({
       );
 
       const decimalLiteral = choice(
-        seq(decimalIntegerLiteral, '.', optional(decimalDigits), optional(exponentPart)),
-        seq('.', decimalDigits, optional(exponentPart)),
+        seq(
+          decimalIntegerLiteral,
+          ".",
+          optional(decimalDigits),
+          optional(exponentPart),
+        ),
+        seq(".", decimalDigits, optional(exponentPart)),
         seq(decimalIntegerLiteral, exponentPart),
         decimalDigits,
       );
 
+      return token(seq(choice(hexLiteral, decimalLiteral), optional("l")));
+    },
 
-      return token(choice(hexLiteral, decimalLiteral));
+    integer: (_) =>
+      token(
+        choice(
+          seq(choice("0x", "0X"), repeat1(/_?[A-Fa-f0-9]+/), optional(/[Ll]/)),
+          seq(choice("0o", "0O"), repeat1(/_?[0-7]+/), optional(/[Ll]/)),
+          seq(choice("0b", "0B"), repeat1(/_?[0-1]+/), optional(/[Ll]/)),
+          seq(
+            repeat1(/[0-9]+_?/),
+            choice(
+              optional(/[Ll]/), // long numbers
+              optional(/[jJ]/), // complex numbers
+            ),
+          ),
+        ),
+      ),
+
+    float: (_) => {
+      const digits = repeat1(/[0-9]+_?/);
+      const exponent = seq(/[eE][\+-]?/, digits);
+
+      return token(
+        seq(
+          choice(
+            seq(digits, ".", optional(digits), optional(exponent)),
+            seq(optional(digits), ".", digits, optional(exponent)),
+            seq(digits, exponent),
+          ),
+          optional(/[jJ]/),
+        ),
+      );
     },
 
     this: (_) => "this",

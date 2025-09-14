@@ -57,7 +57,7 @@
             (typed_parameter [15, 21] - [15, 41]
               (identifier [15, 21] - [15, 26])
               type: (type [15, 30] - [15, 41]
-                (identifier [15, 30] - [15, 40])))))
+                (type_null [15, 30] - [15, 41])))))
         return_type: (type [15, 46] - [15, 50]
           (identifier [15, 46] - [15, 50]))
         body: (statement_block [15, 51] - [21, 5]
@@ -71,7 +71,7 @@
             initializer: (variable_declaration [17, 13] - [17, 23]
               (variable_declarator [17, 17] - [17, 22]
                 name: (identifier [17, 17] - [17, 18])
-                value: (number [17, 21] - [17, 22])))
+                value: (integer [17, 21] - [17, 22])))
             condition: (binary_expression [17, 24] - [17, 40]
               left: (identifier [17, 24] - [17, 25])
               right: (call_expression [17, 28] - [17, 40]
@@ -97,13 +97,13 @@
                             array: (array_access [18, 39] - [18, 47]
                               array: (identifier [18, 39] - [18, 44])
                               index: (identifier [18, 45] - [18, 46]))
-                            index: (number [18, 48] - [18, 49]))
+                            index: (integer [18, 48] - [18, 49]))
                           (array_access [18, 52] - [18, 63]
                             array: (array_access [18, 52] - [18, 60]
                               array: (identifier [18, 52] - [18, 57])
                               index: (identifier [18, 58] - [18, 59]))
-                            index: (number [18, 61] - [18, 62]))))
-                      index: (number [18, 65] - [18, 66]))))
+                            index: (integer [18, 61] - [18, 62]))))
+                      index: (integer [18, 65] - [18, 66]))))
                 (empty_statement [18, 68] - [18, 69]))
               (empty_statement [18, 69] - [18, 70])
               (empty_statement [18, 70] - [18, 71])
@@ -117,7 +117,7 @@
             (typed_parameter [24, 20] - [24, 40]
               (identifier [24, 20] - [24, 25])
               type: (type [24, 29] - [24, 40]
-                (identifier [24, 29] - [24, 39])))))
+                (type_null [24, 29] - [24, 40])))))
         return_type: (type [24, 45] - [24, 49]
           (identifier [24, 45] - [24, 49]))
         body: (statement_block [24, 50] - [24, 52]))
@@ -139,10 +139,11 @@
           (return_statement [28, 8] - [28, 53]
             value: (typed_array [28, 15] - [28, 52]
               (array [28, 15] - [28, 36]
-                (new_expression [28, 16] - [28, 35]
-                  constructor: (call_expression [28, 20] - [28, 35]
-                    function: (identifier [28, 20] - [28, 33])
-                    arguments: (arguments [28, 33] - [28, 35]))))
+                (array_unit [28, 16] - [28, 35]
+                  (new_expression [28, 16] - [28, 35]
+                    constructor: (call_expression [28, 20] - [28, 35]
+                      function: (identifier [28, 20] - [28, 33])
+                      arguments: (arguments [28, 33] - [28, 35])))))
               type: (type [28, 40] - [28, 52]
                 (generic_type [28, 40] - [28, 52]
                   (type_identifier [28, 40] - [28, 45])
@@ -193,7 +194,7 @@
               (identifier [39, 42] - [39, 46]))))
         body: (statement_block [39, 47] - [41, 5]
           (return_statement [40, 8] - [40, 18]
-            value: (number [40, 15] - [40, 17]))))))
+            value: (integer [40, 15] - [40, 17]))))))
   (function_declaration [44, 0] - [46, 1]
     name: (identifier [44, 9] - [44, 15])
     parameters: (formal_parameters [44, 15] - [44, 17])
@@ -220,7 +221,7 @@
         initializer: (variable_declaration [49, 9] - [49, 19]
           (variable_declarator [49, 13] - [49, 18]
             name: (identifier [49, 13] - [49, 14])
-            value: (number [49, 17] - [49, 18])))
+            value: (integer [49, 17] - [49, 18])))
         condition: (binary_expression [49, 20] - [49, 39]
           left: (identifier [49, 20] - [49, 21])
           right: (call_expression [49, 24] - [49, 39]
@@ -244,10 +245,10 @@
                   array: (identifier [51, 12] - [51, 18])
                   index: (array_access [51, 19] - [51, 23]
                     array: (identifier [51, 19] - [51, 20])
-                    index: (number [51, 21] - [51, 22])))
+                    index: (integer [51, 21] - [51, 22])))
                 right: (array_access [51, 28] - [51, 32]
                   array: (identifier [51, 28] - [51, 29])
-                  index: (number [51, 30] - [51, 31]))))
+                  index: (integer [51, 30] - [51, 31]))))
             consequence: (statement_block [51, 34] - [53, 9]
               (return_statement [52, 12] - [52, 25]
                 value: (false [52, 19] - [52, 24]))))))
@@ -292,24 +293,30 @@
                 right: (identifier [64, 24] - [64, 32]))))))
       (return_statement [65, 4] - [73, 6]
         value: (array [65, 11] - [73, 5]
-          (identifier [66, 8] - [66, 10])
-          (call_expression [67, 8] - [72, 10]
-            function: (member_expression [67, 8] - [67, 19]
-              object: (identifier [67, 8] - [67, 12])
-              property: (property_identifier [67, 13] - [67, 19]))
-            arguments: (arguments [67, 19] - [72, 10]
-              (string [67, 20] - [67, 60]
-                (string_fragment [67, 21] - [67, 59]))
-              (array [67, 62] - [72, 9]
-                (identifier [68, 12] - [68, 13])
-                (identifier [69, 12] - [69, 18])
-                (identifier [70, 12] - [70, 20])
-                (ternary_expression [71, 12] - [71, 33]
-                  condition: (identifier [71, 12] - [71, 14])
-                  consequence: (string [71, 17] - [71, 21]
-                    (string_fragment [71, 18] - [71, 20]))
-                  alternative: (string [71, 24] - [71, 33]
-                    (string_fragment [71, 25] - [71, 32]))))))))))
+          (array_unit [66, 8] - [66, 10]
+            (identifier [66, 8] - [66, 10]))
+          (array_unit [67, 8] - [72, 10]
+            (call_expression [67, 8] - [72, 10]
+              function: (member_expression [67, 8] - [67, 19]
+                object: (identifier [67, 8] - [67, 12])
+                property: (property_identifier [67, 13] - [67, 19]))
+              arguments: (arguments [67, 19] - [72, 10]
+                (string [67, 20] - [67, 60]
+                  (string_fragment [67, 21] - [67, 59]))
+                (array [67, 62] - [72, 9]
+                  (array_unit [68, 12] - [68, 13]
+                    (identifier [68, 12] - [68, 13]))
+                  (array_unit [69, 12] - [69, 18]
+                    (identifier [69, 12] - [69, 18]))
+                  (array_unit [70, 12] - [70, 20]
+                    (identifier [70, 12] - [70, 20]))
+                  (array_unit [71, 12] - [71, 33]
+                    (ternary_expression [71, 12] - [71, 33]
+                      condition: (identifier [71, 12] - [71, 14])
+                      consequence: (string [71, 17] - [71, 21]
+                        (string_fragment [71, 18] - [71, 20]))
+                      alternative: (string [71, 24] - [71, 33]
+                        (string_fragment [71, 25] - [71, 32]))))))))))))
   (function_declaration [76, 0] - [84, 1]
     name: (identifier [76, 9] - [76, 14])
     parameters: (formal_parameters [76, 14] - [76, 43]
@@ -335,7 +342,7 @@
         condition: (parenthesized_expression [78, 7] - [78, 18]
           (array_access [78, 8] - [78, 17]
             array: (identifier [78, 8] - [78, 14])
-            index: (number [78, 15] - [78, 16])))
+            index: (integer [78, 15] - [78, 16])))
         consequence: (statement_block [78, 19] - [80, 5]
           (expression_statement [79, 8] - [79, 32]
             (call_expression [79, 8] - [79, 31]
@@ -345,7 +352,7 @@
               arguments: (arguments [79, 20] - [79, 31]
                 (array_access [79, 21] - [79, 30]
                   array: (identifier [79, 21] - [79, 27])
-                  index: (number [79, 28] - [79, 29]))))
+                  index: (integer [79, 28] - [79, 29]))))
             (empty_statement [79, 31] - [79, 32])))
         alternative: (else_clause [80, 6] - [82, 5]
           (statement_block [80, 11] - [82, 5]
@@ -357,12 +364,12 @@
                 arguments: (arguments [81, 20] - [81, 31]
                   (array_access [81, 21] - [81, 30]
                     array: (identifier [81, 21] - [81, 27])
-                    index: (number [81, 28] - [81, 29]))))
+                    index: (integer [81, 28] - [81, 29]))))
               (empty_statement [81, 31] - [81, 32])))))
       (return_statement [83, 4] - [83, 21]
         value: (array_access [83, 11] - [83, 20]
           array: (identifier [83, 11] - [83, 17])
-          index: (number [83, 18] - [83, 19])))))
+          index: (integer [83, 18] - [83, 19])))))
   (comment [86, 0] - [86, 18])
   (function_declaration [87, 0] - [89, 1]
     name: (identifier [87, 9] - [87, 15])
@@ -370,7 +377,7 @@
     body: (statement_block [87, 18] - [89, 1]
       (return_statement [88, 4] - [88, 15]
         value: (identifier [88, 11] - [88, 14]))))
-  (function_declaration [91, 0] - [176, 1]
+  (function_declaration [91, 0] - [107, 1]
     name: (identifier [91, 9] - [91, 17])
     parameters: (formal_parameters [91, 17] - [91, 19])
     (type [91, 23] - [91, 35]
@@ -379,285 +386,373 @@
         (type_arguments [91, 28] - [91, 35]
           (type [91, 29] - [91, 34]
             (identifier [91, 29] - [91, 34])))))
-    body: (statement_block [91, 36] - [176, 1]
-      (return_statement [92, 4] - [175, 36]
-        (ERROR [92, 11] - [175, 35]
-          (ERROR [93, 8] - [109, 17]
-            (array [93, 8] - [101, 52]
-              (array [94, 12] - [94, 29]
-                (number [94, 13] - [94, 14])
-                (binary_expression [94, 16] - [94, 28]
-                  left: (number [94, 16] - [94, 17])
-                  right: (parenthesized_expression [94, 21] - [94, 28]
-                    (binary_expression [94, 22] - [94, 27]
-                      left: (number [94, 22] - [94, 23])
-                      right: (number [94, 26] - [94, 27])))))
+    body: (statement_block [91, 36] - [107, 1]
+      (return_statement [92, 4] - [106, 6]
+        value: (parenthesized_expression [92, 11] - [106, 5]
+          (typed_array [93, 8] - [105, 25]
+            (array [93, 8] - [105, 9]
+              (array_unit [94, 12] - [94, 29]
+                (array [94, 12] - [94, 29]
+                  (array_unit [94, 13] - [94, 14]
+                    (integer [94, 13] - [94, 14]))
+                  (array_unit [94, 16] - [94, 28]
+                    (binary_expression [94, 16] - [94, 28]
+                      left: (integer [94, 16] - [94, 17])
+                      right: (parenthesized_expression [94, 21] - [94, 28]
+                        (binary_expression [94, 22] - [94, 27]
+                          left: (integer [94, 22] - [94, 23])
+                          right: (integer [94, 26] - [94, 27])))))))
               (array [95, 12] - [95, 29]
-                (number [95, 13] - [95, 14])
-                (binary_expression [95, 16] - [95, 28]
-                  left: (parenthesized_expression [95, 16] - [95, 24]
-                    (binary_expression [95, 17] - [95, 23]
-                      left: (number [95, 17] - [95, 18])
-                      right: (number [95, 22] - [95, 23])))
-                  right: (number [95, 27] - [95, 28])))
+                (array_unit [95, 13] - [95, 14]
+                  (integer [95, 13] - [95, 14]))
+                (array_unit [95, 16] - [95, 28]
+                  (binary_expression [95, 16] - [95, 28]
+                    left: (parenthesized_expression [95, 16] - [95, 24]
+                      (binary_expression [95, 17] - [95, 23]
+                        left: (integer [95, 17] - [95, 18])
+                        right: (integer [95, 22] - [95, 23])))
+                    right: (integer [95, 27] - [95, 28]))))
               (array [96, 12] - [96, 50]
-                (true [96, 13] - [96, 17])
-                (binary_expression [96, 19] - [96, 49]
-                  left: (parenthesized_expression [96, 19] - [96, 26]
-                    (binary_expression [96, 20] - [96, 25]
-                      left: (number [96, 20] - [96, 21])
-                      right: (number [96, 24] - [96, 25])))
-                  right: (member_expression [96, 38] - [96, 49]
-                    object: (identifier [96, 38] - [96, 42])
-                    property: (property_identifier [96, 43] - [96, 49]))))
+                (array_unit [96, 13] - [96, 17]
+                  (true [96, 13] - [96, 17]))
+                (array_unit [96, 19] - [96, 49]
+                  (binary_expression [96, 19] - [96, 49]
+                    left: (parenthesized_expression [96, 19] - [96, 26]
+                      (binary_expression [96, 20] - [96, 25]
+                        left: (integer [96, 20] - [96, 21])
+                        right: (integer [96, 24] - [96, 25])))
+                    right: (member_expression [96, 38] - [96, 49]
+                      object: (identifier [96, 38] - [96, 42])
+                      property: (property_identifier [96, 43] - [96, 49])))))
               (array [97, 12] - [97, 54]
-                (true [97, 13] - [97, 17])
-                (ERROR [97, 19] - [97, 45]
+                (array_unit [97, 13] - [97, 17]
+                  (true [97, 13] - [97, 17]))
+                (array_unit [97, 19] - [97, 53]
                   (parenthesized_expression [97, 19] - [97, 42]
                     (binary_expression [97, 20] - [97, 41]
                       left: (parenthesized_expression [97, 20] - [97, 27]
                         (binary_expression [97, 21] - [97, 26]
-                          left: (number [97, 21] - [97, 22])
-                          right: (number [97, 25] - [97, 26])))
-                      right: (symbol [97, 32] - [97, 41]))))
-                (identifier [97, 46] - [97, 53]))
+                          left: (integer [97, 21] - [97, 22])
+                          right: (integer [97, 25] - [97, 26])))
+                      right: (symbol [97, 32] - [97, 41])))
+                  (type [97, 46] - [97, 53]
+                    (identifier [97, 46] - [97, 53]))))
               (array [98, 12] - [98, 60]
-                (array [98, 13] - [98, 30]
-                  (array [98, 14] - [98, 20]
-                    (number [98, 15] - [98, 16])
-                    (number [98, 18] - [98, 19]))
-                  (array [98, 22] - [98, 29]
-                    (unary_expression [98, 23] - [98, 25]
-                      argument: (number [98, 24] - [98, 25]))
-                    (number [98, 27] - [98, 28])))
-                (dictionary [98, 32] - [98, 59]
-                  (pair [98, 34] - [98, 48]
-                    key: (ternary_expression [98, 34] - [98, 43]
-                      condition: (number [98, 34] - [98, 35])
-                      consequence: (number [98, 38] - [98, 39])
-                      alternative: (number [98, 42] - [98, 43]))
-                    value: (number [98, 47] - [98, 48]))
-                  (pair [98, 50] - [98, 57]
-                    key: (unary_expression [98, 50] - [98, 52]
-                      argument: (number [98, 51] - [98, 52]))
-                    value: (number [98, 56] - [98, 57]))))
+                (array_unit [98, 13] - [98, 30]
+                  (array [98, 13] - [98, 30]
+                    (array_unit [98, 14] - [98, 20]
+                      (array [98, 14] - [98, 20]
+                        (array_unit [98, 15] - [98, 16]
+                          (integer [98, 15] - [98, 16]))
+                        (array_unit [98, 18] - [98, 19]
+                          (integer [98, 18] - [98, 19]))))
+                    (array [98, 22] - [98, 29]
+                      (array_unit [98, 23] - [98, 25]
+                        (unary_expression [98, 23] - [98, 25]
+                          argument: (integer [98, 24] - [98, 25])))
+                      (array_unit [98, 27] - [98, 28]
+                        (integer [98, 27] - [98, 28])))))
+                (array_unit [98, 32] - [98, 59]
+                  (dictionary [98, 32] - [98, 59]
+                    (pair [98, 34] - [98, 48]
+                      key: (ternary_expression [98, 34] - [98, 43]
+                        condition: (integer [98, 34] - [98, 35])
+                        consequence: (integer [98, 38] - [98, 39])
+                        alternative: (integer [98, 42] - [98, 43]))
+                      value: (integer [98, 47] - [98, 48]))
+                    (pair [98, 50] - [98, 57]
+                      key: (unary_expression [98, 50] - [98, 52]
+                        argument: (integer [98, 51] - [98, 52]))
+                      value: (integer [98, 56] - [98, 57])))))
               (array [99, 12] - [99, 45]
-                (true [99, 13] - [99, 17])
-                (ERROR [99, 19] - [99, 20]
-                  (number [99, 19] - [99, 20]))
-                (binary_expression [99, 20] - [99, 44]
-                  left: (identifier [99, 20] - [99, 22])
-                  right: (member_expression [99, 34] - [99, 44]
-                    object: (identifier [99, 34] - [99, 38])
-                    property: (property_identifier [99, 39] - [99, 44]))))
+                (array_unit [99, 13] - [99, 17]
+                  (true [99, 13] - [99, 17]))
+                (array_unit [99, 19] - [99, 44]
+                  (binary_expression [99, 19] - [99, 44]
+                    left: (float [99, 19] - [99, 22])
+                    right: (member_expression [99, 34] - [99, 44]
+                      object: (identifier [99, 34] - [99, 38])
+                      property: (property_identifier [99, 39] - [99, 44])))))
               (array [100, 12] - [100, 50]
-                (true [100, 13] - [100, 17])
-                (ERROR [100, 19] - [100, 26]
-                  (true [100, 19] - [100, 23]))
-                (ternary_expression [100, 27] - [100, 49]
-                  condition: (identifier [100, 27] - [100, 34])
-                  consequence: (true [100, 37] - [100, 41])
-                  alternative: (false [100, 44] - [100, 49])))
-              (ternary_expression [101, 12] - [101, 51]
-                condition: (typed_array [101, 12] - [101, 35]
-                  (array [101, 12] - [101, 24]
-                    (false [101, 13] - [101, 18])
-                    (null [101, 20] - [101, 24]))
-                  type: (type [101, 28] - [101, 35]
-                    (identifier [101, 28] - [101, 35])))
-                (ERROR [101, 37] - [101, 38])
-                consequence: (true [101, 39] - [101, 43])
-                alternative: (false [101, 46] - [101, 51])))
-            (array [102, 12] - [102, 27]
-              (identifier [102, 13] - [102, 16])
-              (call_expression [102, 18] - [102, 26]
-                function: (identifier [102, 18] - [102, 24])
-                arguments: (arguments [102, 24] - [102, 26])))
-            (array [103, 12] - [103, 22]
-              (ERROR [103, 13] - [103, 14]
-                (number [103, 13] - [103, 14]))
-              (identifier [103, 14] - [103, 17])
-              (number [103, 19] - [103, 20])
-              (ERROR [103, 20] - [103, 21]
-                (identifier [103, 20] - [103, 21])))
-            (array [104, 12] - [104, 21]
-              (number [104, 13] - [104, 15])
-              (ERROR [104, 15] - [104, 16]
-                (identifier [104, 15] - [104, 16]))
-              (number [104, 18] - [104, 19])
-              (ERROR [104, 19] - [104, 20]
-                (identifier [104, 19] - [104, 20])))
-            (ERROR [105, 19] - [109, 5])
-            (type [109, 6] - [109, 17]
-              (identifier [109, 6] - [109, 17])))
-          (ERROR [110, 4] - [110, 37]
-            (call_expression [110, 4] - [110, 29]
-              function: (identifier [110, 4] - [110, 12])
-              (ERROR [110, 13] - [110, 16]
-                (identifier [110, 13] - [110, 16]))
-              arguments: (arguments [110, 16] - [110, 29]
-                (ERROR [110, 17] - [110, 21]
-                  (identifier [110, 17] - [110, 18]))
-                (identifier [110, 22] - [110, 28])))
-            (identifier [110, 33] - [110, 37]))
-          (ERROR [111, 8] - [114, 38]
+                (array_unit [100, 13] - [100, 17]
+                  (true [100, 13] - [100, 17]))
+                (array_unit [100, 19] - [100, 49]
+                  (ternary_expression [100, 19] - [100, 49]
+                    condition: (true [100, 19] - [100, 23])
+                    (type [100, 27] - [100, 34]
+                      (identifier [100, 27] - [100, 34]))
+                    consequence: (true [100, 37] - [100, 41])
+                    alternative: (false [100, 44] - [100, 49]))))
+              (array [101, 12] - [101, 52]
+                (array_unit [101, 13] - [101, 18]
+                  (false [101, 13] - [101, 18]))
+                (array_unit [101, 20] - [101, 51]
+                  (ternary_expression [101, 20] - [101, 51]
+                    condition: (null [101, 20] - [101, 24])
+                    (type [101, 28] - [101, 36]
+                      (type_null [101, 28] - [101, 36]))
+                    consequence: (true [101, 39] - [101, 43])
+                    alternative: (false [101, 46] - [101, 51]))))
+              (array [102, 12] - [102, 27]
+                (array_unit [102, 13] - [102, 16]
+                  (identifier [102, 13] - [102, 16]))
+                (array_unit [102, 18] - [102, 26]
+                  (call_expression [102, 18] - [102, 26]
+                    function: (identifier [102, 18] - [102, 24])
+                    arguments: (arguments [102, 24] - [102, 26]))))
+              (array [103, 12] - [103, 22]
+                (array_unit [103, 13] - [103, 17]
+                  (integer [103, 13] - [103, 17]))
+                (array_unit [103, 19] - [103, 21]
+                  (integer [103, 19] - [103, 21])))
+              (array [104, 12] - [104, 21]
+                (array_unit [104, 13] - [104, 16]
+                  (integer [104, 13] - [104, 16]))
+                (array_unit [104, 18] - [104, 20]
+                  (integer [104, 18] - [104, 20]))))
+            type: (type [105, 13] - [105, 25]
+              (generic_type [105, 13] - [105, 25]
+                (type_identifier [105, 13] - [105, 18])
+                (type_arguments [105, 18] - [105, 25]
+                  (type [105, 19] - [105, 24]
+                    (identifier [105, 19] - [105, 24]))))))))))
+  (class_declaration [109, 0] - [147, 1]
+    name: (identifier [109, 6] - [109, 17])
+    body: (class_body [109, 18] - [147, 1]
+      member: (method_definition [110, 4] - [112, 5]
+        name: (property_identifier [110, 13] - [110, 16])
+        parameters: (formal_parameters [110, 16] - [110, 29]
+          (parameter [110, 17] - [110, 28]
+            (typed_parameter [110, 17] - [110, 28]
+              (identifier [110, 17] - [110, 18])
+              type: (type [110, 22] - [110, 28]
+                (identifier [110, 22] - [110, 28])))))
+        return_type: (type [110, 33] - [110, 37]
+          (identifier [110, 33] - [110, 37]))
+        body: (statement_block [110, 38] - [112, 5]
+          (expression_statement [111, 8] - [111, 26]
             (call_expression [111, 8] - [111, 25]
               function: (member_expression [111, 8] - [111, 22]
                 object: (identifier [111, 8] - [111, 14])
                 property: (property_identifier [111, 15] - [111, 22]))
               arguments: (arguments [111, 22] - [111, 25]
                 (identifier [111, 23] - [111, 24])))
-            (call_expression [114, 13] - [114, 30]
-              function: (identifier [114, 13] - [114, 17])
-              arguments: (arguments [114, 17] - [114, 30]
-                (ERROR [114, 18] - [114, 22]
-                  (identifier [114, 18] - [114, 19]))
-                (identifier [114, 23] - [114, 29])))
-            (identifier [114, 34] - [114, 38]))
-          (ERROR [115, 8] - [119, 61]
+            (empty_statement [111, 25] - [111, 26]))))
+      member: (method_definition [114, 4] - [117, 5]
+        name: (property_identifier [114, 13] - [114, 17])
+        parameters: (formal_parameters [114, 17] - [114, 30]
+          (parameter [114, 18] - [114, 29]
+            (typed_parameter [114, 18] - [114, 29]
+              (identifier [114, 18] - [114, 19])
+              type: (type [114, 23] - [114, 29]
+                (identifier [114, 23] - [114, 29])))))
+        return_type: (type [114, 34] - [114, 38]
+          (identifier [114, 34] - [114, 38]))
+        body: (statement_block [114, 39] - [117, 5]
+          (expression_statement [115, 8] - [115, 26]
             (call_expression [115, 8] - [115, 25]
               function: (member_expression [115, 8] - [115, 22]
                 object: (identifier [115, 8] - [115, 14])
                 property: (property_identifier [115, 15] - [115, 22]))
               arguments: (arguments [115, 22] - [115, 25]
                 (identifier [115, 23] - [115, 24])))
-            (null [116, 15] - [116, 19])
-            (call_expression [119, 13] - [119, 30]
-              function: (identifier [119, 13] - [119, 17])
-              arguments: (arguments [119, 17] - [119, 30]
-                (ERROR [119, 18] - [119, 22]
-                  (identifier [119, 18] - [119, 19]))
-                (identifier [119, 23] - [119, 29])))
-            (call_expression [119, 34] - [119, 53]
-              function: (identifier [119, 34] - [119, 40])
-              arguments: (arguments [119, 40] - [119, 53]
-                (ERROR [119, 41] - [119, 45]
-                  (identifier [119, 41] - [119, 42]))
-                (identifier [119, 46] - [119, 52])))
-            (identifier [119, 57] - [119, 61]))
-          (ERROR [120, 8] - [124, 37]
+            (empty_statement [115, 25] - [115, 26]))
+          (return_statement [116, 8] - [116, 20]
+            value: (null [116, 15] - [116, 19]))))
+      member: (method_definition [119, 4] - [122, 5]
+        name: (property_identifier [119, 13] - [119, 17])
+        (ERROR [119, 17] - [119, 40]
+          (formal_parameters [119, 17] - [119, 30]
+            (parameter [119, 18] - [119, 29]
+              (typed_parameter [119, 18] - [119, 29]
+                (identifier [119, 18] - [119, 19])
+                type: (type [119, 23] - [119, 29]
+                  (identifier [119, 23] - [119, 29])))))
+          (identifier [119, 34] - [119, 40]))
+        parameters: (formal_parameters [119, 40] - [119, 53]
+          (parameter [119, 41] - [119, 52]
+            (typed_parameter [119, 41] - [119, 52]
+              (identifier [119, 41] - [119, 42])
+              type: (type [119, 46] - [119, 52]
+                (identifier [119, 46] - [119, 52])))))
+        return_type: (type [119, 57] - [119, 61]
+          (identifier [119, 57] - [119, 61]))
+        body: (statement_block [119, 62] - [122, 5]
+          (expression_statement [120, 8] - [120, 26]
             (call_expression [120, 8] - [120, 25]
               function: (member_expression [120, 8] - [120, 22]
                 object: (identifier [120, 8] - [120, 14])
                 property: (property_identifier [120, 15] - [120, 22]))
               arguments: (arguments [120, 22] - [120, 25]
                 (identifier [120, 23] - [120, 24])))
-            (call_expression [121, 15] - [121, 27]
+            (empty_statement [120, 25] - [120, 26]))
+          (return_statement [121, 8] - [121, 28]
+            value: (call_expression [121, 15] - [121, 27]
               function: (identifier [121, 15] - [121, 21])
               arguments: (arguments [121, 21] - [121, 27]
-                (symbol [121, 22] - [121, 26])))
-            (call_expression [124, 13] - [124, 29]
-              function: (identifier [124, 13] - [124, 16])
-              arguments: (arguments [124, 16] - [124, 29]
-                (ERROR [124, 17] - [124, 21]
-                  (identifier [124, 17] - [124, 18]))
-                (identifier [124, 22] - [124, 28])))
-            (identifier [124, 33] - [124, 37]))
-          (ERROR [125, 8] - [129, 120]
+                (symbol [121, 22] - [121, 26]))))))
+      member: (method_definition [124, 4] - [126, 5]
+        name: (property_identifier [124, 13] - [124, 16])
+        parameters: (formal_parameters [124, 16] - [124, 29]
+          (parameter [124, 17] - [124, 28]
+            (typed_parameter [124, 17] - [124, 28]
+              (identifier [124, 17] - [124, 18])
+              type: (type [124, 22] - [124, 28]
+                (identifier [124, 22] - [124, 28])))))
+        return_type: (type [124, 33] - [124, 37]
+          (identifier [124, 33] - [124, 37]))
+        body: (statement_block [124, 38] - [126, 5]
+          (expression_statement [125, 8] - [125, 26]
             (call_expression [125, 8] - [125, 25]
               function: (member_expression [125, 8] - [125, 22]
                 object: (identifier [125, 8] - [125, 14])
                 property: (property_identifier [125, 15] - [125, 22]))
               arguments: (arguments [125, 22] - [125, 25]
                 (identifier [125, 23] - [125, 24])))
-            (comment [128, 4] - [128, 63])
-            (call_expression [129, 13] - [129, 112]
-              function: (identifier [129, 13] - [129, 24])
-              arguments: (arguments [129, 24] - [129, 112]
-                (ERROR [129, 25] - [129, 52]
-                  (identifier [129, 25] - [129, 26])
-                  (call_expression [129, 30] - [129, 49]
-                    function: (identifier [129, 30] - [129, 36])
-                    arguments: (arguments [129, 36] - [129, 49]
-                      (ERROR [129, 37] - [129, 41]
-                        (identifier [129, 37] - [129, 38]))
-                      (identifier [129, 42] - [129, 48]))))
-                (binary_expression [129, 53] - [129, 80]
-                  left: (identifier [129, 53] - [129, 57])
-                  right: (call_expression [129, 61] - [129, 80]
-                    function: (identifier [129, 61] - [129, 67])
-                    arguments: (arguments [129, 67] - [129, 80]
-                      (ERROR [129, 68] - [129, 72]
-                        (identifier [129, 68] - [129, 69]))
-                      (identifier [129, 73] - [129, 79]))))
-                (ERROR [129, 81] - [129, 88]
+            (empty_statement [125, 25] - [125, 26]))))
+      (comment [128, 4] - [128, 63])
+      member: (method_definition [129, 4] - [131, 5]
+        name: (property_identifier [129, 13] - [129, 24])
+        (ERROR [129, 24] - [129, 67]
+          (formal_parameters [129, 24] - [129, 49]
+            (parameter [129, 25] - [129, 48]
+              (typed_parameter [129, 25] - [129, 48]
+                (identifier [129, 25] - [129, 26])
+                type: (type [129, 30] - [129, 48]
+                  (constrained_type [129, 30] - [129, 48]
+                    (type [129, 30] - [129, 36]
+                      (identifier [129, 30] - [129, 36]))
+                    (ERROR [129, 36] - [129, 38]
+                      (identifier [129, 37] - [129, 38]))
+                    (type [129, 42] - [129, 48]
+                      (identifier [129, 42] - [129, 48])))))))
+          (type [129, 53] - [129, 67]
+            (union_type [129, 53] - [129, 67]
+              (type [129, 53] - [129, 57]
+                (identifier [129, 53] - [129, 57]))
+              (type [129, 61] - [129, 67]
+                (identifier [129, 61] - [129, 67])))))
+        parameters: (formal_parameters [129, 67] - [129, 80]
+          (parameter [129, 68] - [129, 79]
+            (typed_parameter [129, 68] - [129, 79]
+              (identifier [129, 68] - [129, 69])
+              type: (type [129, 73] - [129, 79]
+                (identifier [129, 73] - [129, 79])))))
+        return_type: (type [129, 84] - [129, 120]
+          (constrained_type [129, 84] - [129, 120]
+            (type [129, 84] - [129, 111]
+              (constrained_type [129, 84] - [129, 111]
+                (type [129, 84] - [129, 88]
                   (identifier [129, 84] - [129, 88]))
-                (ERROR [129, 90] - [129, 94]
+                (ERROR [129, 88] - [129, 91]
                   (identifier [129, 90] - [129, 91]))
-                (binary_expression [129, 95] - [129, 111]
-                  left: (identifier [129, 95] - [129, 101])
-                  right: (identifier [129, 105] - [129, 111]))))
-            (identifier [129, 116] - [129, 120]))
-          (ERROR [130, 8] - [134, 123]
+                (type [129, 95] - [129, 111]
+                  (union_type [129, 95] - [129, 111]
+                    (type [129, 95] - [129, 101]
+                      (identifier [129, 95] - [129, 101]))
+                    (type [129, 105] - [129, 111]
+                      (identifier [129, 105] - [129, 111]))))))
+            (ERROR [129, 111] - [129, 112])
+            (type [129, 116] - [129, 120]
+              (identifier [129, 116] - [129, 120]))))
+        body: (statement_block [129, 121] - [131, 5]
+          (expression_statement [130, 8] - [130, 53]
             (call_expression [130, 8] - [130, 52]
               function: (member_expression [130, 8] - [130, 49]
                 object: (parenthesized_expression [130, 8] - [130, 42]
-                  (ERROR [130, 9] - [130, 36]
-                    (identifier [130, 9] - [130, 10])
-                    (call_expression [130, 14] - [130, 33]
-                      function: (identifier [130, 14] - [130, 20])
-                      arguments: (arguments [130, 20] - [130, 33]
-                        (ERROR [130, 21] - [130, 25]
-                          (identifier [130, 21] - [130, 22]))
-                        (identifier [130, 26] - [130, 32]))))
-                  (identifier [130, 37] - [130, 41]))
+                  (identifier [130, 9] - [130, 10])
+                  (ERROR [130, 11] - [130, 41]
+                    (type [130, 14] - [130, 41]
+                      (constrained_type [130, 14] - [130, 41]
+                        (type [130, 14] - [130, 32]
+                          (constrained_type [130, 14] - [130, 32]
+                            (type [130, 14] - [130, 20]
+                              (identifier [130, 14] - [130, 20]))
+                            (ERROR [130, 20] - [130, 22]
+                              (identifier [130, 21] - [130, 22]))
+                            (type [130, 26] - [130, 32]
+                              (identifier [130, 26] - [130, 32]))))
+                        (ERROR [130, 32] - [130, 33])
+                        (type [130, 37] - [130, 41]
+                          (identifier [130, 37] - [130, 41]))))))
                 property: (property_identifier [130, 43] - [130, 49]))
               arguments: (arguments [130, 49] - [130, 52]
                 (identifier [130, 50] - [130, 51])))
-            (comment [133, 4] - [133, 62])
-            (call_expression [134, 13] - [134, 115]
-              function: (identifier [134, 13] - [134, 24])
-              arguments: (arguments [134, 24] - [134, 115]
-                (ERROR [134, 25] - [134, 52]
-                  (identifier [134, 25] - [134, 26])
-                  (call_expression [134, 30] - [134, 49]
-                    function: (identifier [134, 30] - [134, 36])
-                    arguments: (arguments [134, 36] - [134, 49]
-                      (ERROR [134, 37] - [134, 41]
-                        (identifier [134, 37] - [134, 38]))
-                      (identifier [134, 42] - [134, 48]))))
-                (binary_expression [134, 53] - [134, 80]
-                  left: (identifier [134, 53] - [134, 57])
-                  right: (call_expression [134, 61] - [134, 80]
-                    function: (identifier [134, 61] - [134, 67])
-                    arguments: (arguments [134, 67] - [134, 80]
-                      (ERROR [134, 68] - [134, 72]
-                        (identifier [134, 68] - [134, 69]))
-                      (identifier [134, 73] - [134, 79]))))
-                (ERROR [134, 81] - [134, 88]
-                  (identifier [134, 84] - [134, 88]))
-                (ERROR [134, 90] - [134, 94]
-                  (identifier [134, 90] - [134, 91]))
-                (identifier [134, 95] - [134, 101])
-                (ERROR [134, 103] - [134, 107]
+            (empty_statement [130, 52] - [130, 53]))))
+      (comment [133, 4] - [133, 62])
+      member: (method_definition [134, 4] - [139, 5]
+        name: (property_identifier [134, 13] - [134, 24])
+        (ERROR [134, 24] - [134, 67]
+          (formal_parameters [134, 24] - [134, 49]
+            (parameter [134, 25] - [134, 48]
+              (typed_parameter [134, 25] - [134, 48]
+                (identifier [134, 25] - [134, 26])
+                type: (type [134, 30] - [134, 48]
+                  (constrained_type [134, 30] - [134, 48]
+                    (type [134, 30] - [134, 36]
+                      (identifier [134, 30] - [134, 36]))
+                    (ERROR [134, 36] - [134, 38]
+                      (identifier [134, 37] - [134, 38]))
+                    (type [134, 42] - [134, 48]
+                      (identifier [134, 42] - [134, 48])))))))
+          (type [134, 53] - [134, 67]
+            (union_type [134, 53] - [134, 67]
+              (type [134, 53] - [134, 57]
+                (identifier [134, 53] - [134, 57]))
+              (type [134, 61] - [134, 67]
+                (identifier [134, 61] - [134, 67])))))
+        parameters: (formal_parameters [134, 67] - [134, 80]
+          (parameter [134, 68] - [134, 79]
+            (typed_parameter [134, 68] - [134, 79]
+              (identifier [134, 68] - [134, 69])
+              type: (type [134, 73] - [134, 79]
+                (identifier [134, 73] - [134, 79])))))
+        return_type: (type [134, 84] - [134, 123]
+          (constrained_type [134, 84] - [134, 123]
+            (type [134, 84] - [134, 114]
+              (constrained_type [134, 84] - [134, 114]
+                (type [134, 84] - [134, 101]
+                  (constrained_type [134, 84] - [134, 101]
+                    (type [134, 84] - [134, 88]
+                      (identifier [134, 84] - [134, 88]))
+                    (ERROR [134, 88] - [134, 91]
+                      (identifier [134, 90] - [134, 91]))
+                    (type [134, 95] - [134, 101]
+                      (identifier [134, 95] - [134, 101]))))
+                (ERROR [134, 101] - [134, 104]
                   (identifier [134, 103] - [134, 104]))
-                (identifier [134, 108] - [134, 114])))
-            (identifier [134, 119] - [134, 123]))
-          (ERROR [135, 8] - [136, 15]
-            (assignment_expression [135, 8] - [135, 28]
-              left: (pattern [135, 8] - [135, 11]
-                (identifier [135, 8] - [135, 11]))
-              (ERROR [135, 12] - [135, 14]
-                (identifier [135, 12] - [135, 14]))
-              right: (call_expression [135, 17] - [135, 28]
+                (type [134, 108] - [134, 114]
+                  (identifier [134, 108] - [134, 114]))))
+            (ERROR [134, 114] - [134, 115])
+            (type [134, 119] - [134, 123]
+              (identifier [134, 119] - [134, 123]))))
+        body: (statement_block [134, 124] - [139, 5]
+          (variable_declaration [135, 8] - [135, 29]
+            (variable_declarator [135, 12] - [135, 28]
+              name: (identifier [135, 12] - [135, 14])
+              value: (call_expression [135, 17] - [135, 28]
                 function: (member_expression [135, 17] - [135, 25]
                   object: (identifier [135, 17] - [135, 18])
                   property: (property_identifier [135, 19] - [135, 25]))
                 arguments: (arguments [135, 25] - [135, 28]
-                  (identifier [135, 26] - [135, 27]))))
-            (parenthesized_expression [136, 11] - [136, 15]
-              (identifier [136, 12] - [136, 14])))
-          (ERROR [137, 12] - [141, 20]
-            (call_expression [137, 12] - [137, 24]
-              function: (member_expression [137, 12] - [137, 21]
-                object: (identifier [137, 12] - [137, 14])
-                property: (property_identifier [137, 15] - [137, 21]))
-              arguments: (arguments [137, 21] - [137, 24]
-                (identifier [137, 22] - [137, 23])))
-            (call_expression [141, 13] - [141, 20]
-              function: (identifier [141, 13] - [141, 18])
-              arguments: (arguments [141, 18] - [141, 20])))
-          (ERROR [142, 8] - [150, 46]
+                  (identifier [135, 26] - [135, 27])))))
+          (if_statement [136, 8] - [138, 9]
+            condition: (parenthesized_expression [136, 11] - [136, 15]
+              (identifier [136, 12] - [136, 14]))
+            consequence: (statement_block [136, 16] - [138, 9]
+              (expression_statement [137, 12] - [137, 25]
+                (call_expression [137, 12] - [137, 24]
+                  function: (member_expression [137, 12] - [137, 21]
+                    object: (identifier [137, 12] - [137, 14])
+                    property: (property_identifier [137, 15] - [137, 21]))
+                  arguments: (arguments [137, 21] - [137, 24]
+                    (identifier [137, 22] - [137, 23])))
+                (empty_statement [137, 24] - [137, 25]))))))
+      member: (method_definition [141, 4] - [146, 5]
+        name: (property_identifier [141, 13] - [141, 18])
+        parameters: (formal_parameters [141, 18] - [141, 20])
+        body: (statement_block [141, 21] - [146, 5]
+          (expression_statement [142, 8] - [142, 38]
             (call_expression [142, 8] - [142, 37]
               function: (identifier [142, 8] - [142, 19])
               arguments: (arguments [142, 19] - [142, 37]
@@ -665,7 +760,9 @@
                   function: (identifier [142, 20] - [142, 26])
                   arguments: (arguments [142, 26] - [142, 32]
                     (symbol [142, 27] - [142, 31])))
-                (number [142, 34] - [142, 36])))
+                (integer [142, 34] - [142, 36])))
+            (empty_statement [142, 37] - [142, 38]))
+          (expression_statement [143, 8] - [143, 43]
             (call_expression [143, 8] - [143, 42]
               function: (identifier [143, 8] - [143, 19])
               arguments: (arguments [143, 19] - [143, 42]
@@ -675,6 +772,8 @@
                     (symbol [143, 27] - [143, 31])))
                 (string [143, 34] - [143, 41]
                   (string_fragment [143, 35] - [143, 40]))))
+            (empty_statement [143, 42] - [143, 43]))
+          (expression_statement [144, 8] - [144, 48]
             (call_expression [144, 8] - [144, 47]
               function: (identifier [144, 8] - [144, 19])
               arguments: (arguments [144, 19] - [144, 47]
@@ -682,9 +781,11 @@
                   function: (identifier [144, 20] - [144, 26])
                   arguments: (arguments [144, 26] - [144, 33]
                     (symbol [144, 27] - [144, 32])))
-                (number [144, 35] - [144, 37])
+                (integer [144, 35] - [144, 37])
                 (string [144, 39] - [144, 46]
                   (string_fragment [144, 40] - [144, 45]))))
+            (empty_statement [144, 47] - [144, 48]))
+          (expression_statement [145, 8] - [145, 50]
             (call_expression [145, 8] - [145, 49]
               function: (identifier [145, 8] - [145, 19])
               arguments: (arguments [145, 19] - [145, 49]
@@ -692,123 +793,129 @@
                   function: (identifier [145, 20] - [145, 26])
                   arguments: (arguments [145, 26] - [145, 33]
                     (symbol [145, 27] - [145, 32])))
-                (number [145, 35] - [145, 37])
+                (integer [145, 35] - [145, 37])
                 (string [145, 39] - [145, 48]
                   (string_fragment [145, 40] - [145, 47]))))
-            (parenthesized_expression [149, 0] - [149, 7]
-              (symbol [149, 1] - [149, 6]))
-            (call_expression [150, 9] - [150, 35]
-              function: (identifier [150, 9] - [150, 17])
-              arguments: (arguments [150, 17] - [150, 35]
-                (identifier [150, 18] - [150, 24])
-                (ERROR [150, 25] - [150, 34]
-                  (identifier [150, 28] - [150, 34]))))
-            (identifier [150, 39] - [150, 46]))
-          (ERROR [151, 4] - [153, 42]
-            (pattern [151, 4] - [151, 7]
-              (identifier [151, 4] - [151, 7]))
-            (assignment_expression [151, 8] - [151, 26]
-              left: (pattern [151, 8] - [151, 13]
-                (identifier [151, 8] - [151, 13]))
-              right: (call_expression [151, 16] - [151, 26]
-                function: (identifier [151, 16] - [151, 24])
-                arguments: (arguments [151, 24] - [151, 26])))
-            (assignment_expression [152, 8] - [152, 17]
-              left: (pattern [152, 8] - [152, 10]
-                (identifier [152, 8] - [152, 10]))
-              right: (true [152, 13] - [152, 17]))
-            (parenthesized_expression [153, 8] - [153, 42]
-              (update_expression [153, 9] - [153, 41]
-                argument: (binary_expression [153, 9] - [153, 36]
-                  left: (assignment_expression [153, 9] - [153, 18]
-                    left: (pattern [153, 9] - [153, 12]
-                      (identifier [153, 9] - [153, 12]))
-                    (ERROR [153, 13] - [153, 14]
-                      (identifier [153, 13] - [153, 14]))
-                    right: (number [153, 17] - [153, 18]))
-                  (ERROR [153, 18] - [153, 21]
-                    (identifier [153, 20] - [153, 21]))
-                  right: (call_expression [153, 24] - [153, 36]
-                    function: (member_expression [153, 24] - [153, 34]
-                      object: (identifier [153, 24] - [153, 29])
-                      property: (property_identifier [153, 30] - [153, 34]))
-                    arguments: (arguments [153, 34] - [153, 36])))
-                (ERROR [153, 36] - [153, 39]
-                  (identifier [153, 38] - [153, 39])))))
-          (ERROR [154, 8] - [168, 1]
-            (call_expression [154, 8] - [161, 9]
-              function: (identifier [154, 8] - [154, 10])
-              arguments: (arguments [154, 11] - [161, 9]
-                (unary_expression [155, 12] - [160, 13]
-                  argument: (call_expression [155, 13] - [160, 13]
-                    function: (identifier [155, 13] - [155, 18])
-                    arguments: (arguments [155, 18] - [160, 13]
-                      (identifier [156, 16] - [156, 22])
-                      (ERROR [157, 16] - [157, 20]
-                        (identifier [157, 16] - [157, 17]))
-                      (binary_expression [157, 21] - [157, 74]
-                        left: (identifier [157, 21] - [157, 27])
-                        (ERROR [157, 29] - [157, 66]
-                          (pattern [157, 34] - [157, 38]
-                            (identifier [157, 34] - [157, 38]))
-                          (identifier [157, 39] - [157, 46])
-                          (pattern [157, 47] - [157, 54]
-                            (identifier [157, 47] - [157, 54]))
-                          (ERROR [157, 54] - [157, 55])
-                          (pattern [157, 55] - [157, 56]
-                            (identifier [157, 55] - [157, 56]))
-                          (identifier [157, 57] - [157, 62])
-                          (pattern [157, 63] - [157, 66]
-                            (identifier [157, 63] - [157, 66])))
-                        right: (identifier [157, 67] - [157, 74]))
-                      (ERROR [157, 75] - [157, 77])
-                      (array_access [158, 16] - [158, 27]
-                        array: (array_access [158, 16] - [158, 24]
-                          array: (identifier [158, 16] - [158, 21])
-                          index: (identifier [158, 22] - [158, 23]))
-                        index: (number [158, 25] - [158, 26]))
-                      (array_access [159, 16] - [159, 27]
-                        array: (array_access [159, 16] - [159, 24]
-                          array: (identifier [159, 16] - [159, 21])
-                          index: (identifier [159, 22] - [159, 23]))
-                        index: (number [159, 25] - [159, 26])))))))
-            (identifier [162, 12] - [162, 14])
-            (false [162, 17] - [162, 22])
-            (call_expression [166, 4] - [166, 31]
-              function: (member_expression [166, 4] - [166, 29]
-                object: (parenthesized_expression [166, 4] - [166, 23]
-                  (new_expression [166, 5] - [166, 22]
-                    constructor: (call_expression [166, 9] - [166, 22]
-                      function: (identifier [166, 9] - [166, 20])
-                      arguments: (arguments [166, 20] - [166, 22]))))
-                property: (property_identifier [166, 24] - [166, 29]))
-              arguments: (arguments [166, 29] - [166, 31]))
-            (identifier [167, 11] - [167, 13]))
-          (comment [170, 0] - [170, 51])
-          (comment [171, 0] - [171, 17])
-          (ERROR [172, 1] - [175, 28]
-            (binary_expression [172, 3] - [175, 25]
-              left: (binary_expression [172, 3] - [175, 18]
-                left: (binary_expression [172, 3] - [175, 11]
-                  left: (binary_expression [172, 3] - [172, 30]
-                    left: (binary_expression [172, 3] - [172, 24]
-                      left: (binary_expression [172, 3] - [172, 7]
-                        left: (identifier [172, 3] - [172, 6])
-                        right: (identifier [172, 7] - [172, 7]))
-                      right: (symbol [172, 9] - [172, 24]))
-                    (ERROR [172, 26] - [172, 27])
-                    right: (identifier [172, 27] - [172, 30]))
-                  (ERROR [172, 31] - [172, 33])
-                  (comment [172, 34] - [172, 40])
-                  (comment [173, 0] - [173, 6])
-                  (ERROR [174, 0] - [174, 12]
-                    (pattern [174, 0] - [174, 6]
-                      (identifier [174, 0] - [174, 6]))
-                    (identifier [174, 7] - [174, 10]))
-                  right: (identifier [175, 4] - [175, 11]))
-                (ERROR [175, 13] - [175, 14])
-                right: (identifier [175, 15] - [175, 18]))
-              (ERROR [175, 20] - [175, 21])
-              right: (identifier [175, 22] - [175, 25])))
-          (identifier [175, 29] - [175, 35]))))))
-examples/test-casesApp.mc	Parse:    1.58 ms	  2835 bytes/ms	(ERROR [92, 11] - [175, 35])
+            (empty_statement [145, 49] - [145, 50]))))))
+  (ERROR [149, 0] - [149, 7]
+    (annotation [149, 0] - [149, 7]
+      (annotation_keywords [149, 1] - [149, 6])))
+  (function_declaration [150, 0] - [168, 1]
+    name: (identifier [150, 9] - [150, 17])
+    parameters: (formal_parameters [150, 17] - [150, 35]
+      (parameter [150, 18] - [150, 34]
+        (typed_parameter [150, 18] - [150, 34]
+          (identifier [150, 18] - [150, 24])
+          type: (type [150, 28] - [150, 34]
+            (identifier [150, 28] - [150, 34])))))
+    (type [150, 39] - [150, 46]
+      (identifier [150, 39] - [150, 46]))
+    body: (statement_block [150, 47] - [168, 1]
+      (variable_declaration [151, 4] - [151, 27]
+        (variable_declarator [151, 8] - [151, 26]
+          name: (identifier [151, 8] - [151, 13])
+          value: (call_expression [151, 16] - [151, 26]
+            function: (identifier [151, 16] - [151, 24])
+            arguments: (arguments [151, 24] - [151, 26]))))
+      (variable_declaration [152, 4] - [152, 18]
+        (variable_declarator [152, 8] - [152, 17]
+          name: (identifier [152, 8] - [152, 10])
+          value: (true [152, 13] - [152, 17])))
+      (for_statement [153, 4] - [164, 5]
+        initializer: (variable_declaration [153, 9] - [153, 19]
+          (variable_declarator [153, 13] - [153, 18]
+            name: (identifier [153, 13] - [153, 14])
+            value: (integer [153, 17] - [153, 18])))
+        condition: (binary_expression [153, 20] - [153, 36]
+          left: (identifier [153, 20] - [153, 21])
+          right: (call_expression [153, 24] - [153, 36]
+            function: (member_expression [153, 24] - [153, 34]
+              object: (identifier [153, 24] - [153, 29])
+              property: (property_identifier [153, 30] - [153, 34]))
+            arguments: (arguments [153, 34] - [153, 36])))
+        increment: (update_expression [153, 38] - [153, 41]
+          argument: (identifier [153, 38] - [153, 39]))
+        body: (statement_block [153, 43] - [164, 5]
+          (if_statement [154, 8] - [163, 9]
+            condition: (parenthesized_expression [154, 11] - [161, 9]
+              (unary_expression [155, 12] - [160, 13]
+                argument: (call_expression [155, 13] - [160, 13]
+                  function: (identifier [155, 13] - [155, 18])
+                  arguments: (arguments [155, 18] - [160, 13]
+                    (identifier [156, 16] - [156, 22])
+                    (identifier [157, 16] - [157, 17])
+                    (ERROR [157, 18] - [159, 27]
+                      (ERROR [157, 21] - [158, 28]
+                        (identifier [157, 21] - [157, 27])
+                        (identifier [157, 34] - [157, 38])
+                        (identifier [157, 39] - [157, 46])
+                        (identifier [157, 47] - [157, 54])
+                        (ERROR [157, 54] - [157, 55])
+                        (identifier [157, 55] - [157, 56])
+                        (identifier [157, 57] - [157, 62])
+                        (identifier [157, 63] - [157, 66])
+                        (identifier [157, 67] - [157, 74])
+                        (type [158, 16] - [158, 27]
+                          (array_type [158, 16] - [158, 27]
+                            element: (type [158, 16] - [158, 21]
+                              (identifier [158, 16] - [158, 21]))
+                            dimensions: (dimensions [158, 21] - [158, 27]
+                              (identifier [158, 22] - [158, 23])
+                              (integer [158, 25] - [158, 26])))))
+                      (type [159, 16] - [159, 27]
+                        (array_type [159, 16] - [159, 27]
+                          element: (type [159, 16] - [159, 21]
+                            (identifier [159, 16] - [159, 21]))
+                          dimensions: (dimensions [159, 21] - [159, 27]
+                            (identifier [159, 22] - [159, 23])
+                            (integer [159, 25] - [159, 26])))))))))
+            consequence: (statement_block [161, 10] - [163, 9]
+              (expression_statement [162, 12] - [162, 23]
+                (assignment_expression [162, 12] - [162, 22]
+                  left: (pattern [162, 12] - [162, 14]
+                    (identifier [162, 12] - [162, 14]))
+                  right: (false [162, 17] - [162, 22]))
+                (empty_statement [162, 22] - [162, 23]))))))
+      (expression_statement [166, 4] - [166, 32]
+        (call_expression [166, 4] - [166, 31]
+          function: (member_expression [166, 4] - [166, 29]
+            object: (parenthesized_expression [166, 4] - [166, 23]
+              (new_expression [166, 5] - [166, 22]
+                constructor: (call_expression [166, 9] - [166, 22]
+                  function: (identifier [166, 9] - [166, 20])
+                  arguments: (arguments [166, 20] - [166, 22]))))
+            property: (property_identifier [166, 24] - [166, 29]))
+          arguments: (arguments [166, 29] - [166, 31]))
+        (empty_statement [166, 31] - [166, 32]))
+      (return_statement [167, 4] - [167, 14]
+        value: (identifier [167, 11] - [167, 13]))))
+  (comment [170, 0] - [170, 51])
+  (comment [171, 0] - [171, 17])
+  (ERROR [172, 0] - [176, 1]
+    (ERROR [172, 1] - [172, 3])
+    (binary_expression [172, 3] - [175, 25]
+      left: (binary_expression [172, 3] - [175, 18]
+        left: (binary_expression [172, 3] - [175, 11]
+          left: (binary_expression [172, 3] - [172, 30]
+            left: (binary_expression [172, 3] - [172, 24]
+              left: (binary_expression [172, 3] - [172, 7]
+                left: (identifier [172, 3] - [172, 6])
+                right: (identifier [172, 7] - [172, 7]))
+              right: (symbol [172, 9] - [172, 24]))
+            (ERROR [172, 26] - [172, 27])
+            right: (identifier [172, 27] - [172, 30]))
+          (ERROR [172, 31] - [172, 33])
+          (comment [172, 34] - [172, 40])
+          (comment [173, 0] - [173, 6])
+          (ERROR [174, 0] - [174, 12]
+            (pattern [174, 0] - [174, 6]
+              (identifier [174, 0] - [174, 6]))
+            (identifier [174, 7] - [174, 10]))
+          right: (identifier [175, 4] - [175, 11]))
+        (ERROR [175, 13] - [175, 14])
+        right: (identifier [175, 15] - [175, 18]))
+      (ERROR [175, 20] - [175, 21])
+      right: (identifier [175, 22] - [175, 25]))
+    (type [175, 29] - [175, 35]
+      (identifier [175, 29] - [175, 35]))))
+examples/test-casesApp.mc	Parse:    0.82 ms	  5507 bytes/ms	(ERROR [119, 17] - [119, 40])
