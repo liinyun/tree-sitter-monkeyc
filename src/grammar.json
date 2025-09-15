@@ -35,6 +35,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "type_alias_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "if_statement"
         },
         {
@@ -92,6 +96,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "module_declaration"
+        },
+        {
+          "type": "SYMBOL",
           "name": "variable_declaration"
         }
       ]
@@ -120,15 +128,37 @@
     "comment": {
       "type": "TOKEN",
       "content": {
-        "type": "SEQ",
+        "type": "CHOICE",
         "members": [
           {
-            "type": "STRING",
-            "value": "//"
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "//"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[^\\r\\n\\u2028\\u2029]*"
+              }
+            ]
           },
           {
-            "type": "PATTERN",
-            "value": "[^\\r\\n\\u2028\\u2029]*"
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "/*"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[^*]*\\*+([^/*][^*]*\\*+)*"
+              },
+              {
+                "type": "STRING",
+                "value": "/"
+              }
+            ]
           }
         ]
       }
@@ -232,7 +262,7 @@
       }
     },
     "member_expression": {
-      "type": "PREC",
+      "type": "PREC_LEFT",
       "value": "member",
       "content": {
         "type": "SEQ",
@@ -272,6 +302,39 @@
           "name": "empty_statement"
         }
       ]
+    },
+    "type_alias_statement": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "typedef"
+          },
+          {
+            "type": "FIELD",
+            "name": "left",
+            "content": {
+              "type": "SYMBOL",
+              "name": "type"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "as"
+          },
+          {
+            "type": "FIELD",
+            "name": "right",
+            "content": {
+              "type": "SYMBOL",
+              "name": "type"
+            }
+          }
+        ]
+      }
     },
     "variable_declaration": {
       "type": "SEQ",
@@ -958,6 +1021,27 @@
           "name": "expression"
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "as"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "type"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": ")"
         }
@@ -1022,10 +1106,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "constrained_type"
-        },
-        {
-          "type": "SYMBOL",
           "name": "member_type"
         },
         {
@@ -1055,27 +1135,6 @@
           {
             "type": "STRING",
             "value": "or"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "type"
-          }
-        ]
-      }
-    },
-    "constrained_type": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "type"
-          },
-          {
-            "type": "STRING",
-            "value": "as"
           },
           {
             "type": "SYMBOL",
@@ -1268,48 +1327,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "annotation_keywords"
+          "name": "symbol"
         },
         {
           "type": "STRING",
           "value": ")"
-        }
-      ]
-    },
-    "annotation_keywords": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": ":debug"
-        },
-        {
-          "type": "STRING",
-          "value": ":test"
-        },
-        {
-          "type": "STRING",
-          "value": ":background"
-        },
-        {
-          "type": "STRING",
-          "value": ":glance"
-        },
-        {
-          "type": "STRING",
-          "value": ":release"
-        },
-        {
-          "type": "STRING",
-          "value": ":typecheck"
-        },
-        {
-          "type": "STRING",
-          "value": ":initialized"
-        },
-        {
-          "type": "STRING",
-          "value": ":extendedCode"
         }
       ]
     },
@@ -1402,6 +1424,10 @@
         {
           "type": "SYMBOL",
           "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "typed_identifier"
         },
         {
           "type": "SYMBOL",
@@ -1506,6 +1532,27 @@
           ]
         }
       ]
+    },
+    "typed_identifier": {
+      "type": "PREC_LEFT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "identifier"
+          },
+          {
+            "type": "STRING",
+            "value": "as"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "type"
+          }
+        ]
+      }
     },
     "array": {
       "type": "SEQ",
@@ -1766,6 +1813,35 @@
             "type": "SYMBOL",
             "name": "expression"
           }
+        }
+      ]
+    },
+    "module_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "annotation"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "module"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "statement_block"
         }
       ]
     },
@@ -4314,6 +4390,14 @@
     ],
     [
       "array",
+      "primary_expression"
+    ],
+    [
+      "typed_identifier",
+      "primary_expression"
+    ],
+    [
+      "annotation",
       "primary_expression"
     ]
   ],

@@ -56,45 +56,6 @@ function init(a,b) {
 Method to be tested
 ==============================================
 
-function methodTest2(m as Method(x as Number) as Null or Method(x as String) as Void, p as Number, s as String) as Void {
-    var m2 = m.invoke(p);
-    if (m2) {
-        m2.invoke(s);
-    }
-}
-
-
-(:test)
-function runTests(logger as Logger) as Boolean {
-    var tests = getExprs();
-    var ok = true;
-    for (var i = 0; i < tests.size(); i++) {
-        if (
-            !check(
-                logger,
-                i as Number /* :: Flow Comment Shouldn't break the printer */,
-                tests[i][0],
-                tests[i][1]
-            )
-        ) {
-            ok = false;
-        }
-    }
-
-    (new MethodTests()).tests();
-    return ok;
-}
-
-
-
-// checking that comments in odd places don't crash
-// the formatter.
-(/*bar*/ :background_app /*baz*/) // boo
-// biz
-module Bar {
-    typedef /* foo */ Foo as Number;
-}
-
 
 
 ============================================
@@ -105,16 +66,51 @@ function num3(x as Number) as Method(x as String) as Void {
     return method(:str);
 }
 
+function methodTest1(m as Method(x as Number) as Void or Method(x as String) as Void, p as Number or String) as Void {
+    (m as Method(x as Number) as Void).invoke(p);
+}
+
+function methodTest2(m as Method(x as Number) as Null or Method(x as String) as Void, p as Number, s as String) as Void {
+    var m2 = m.invoke(p);
+    if (m2) {
+        m2.invoke(s);
+    }
+}
+
+class a {
+(:test)
+function runTests(logger as Logger) as Boolean {
+    var tests = getExprs();
+    var ok = true;
+    for (var i = 0; i < tests.size(); i++) {
+        if (
+            !check(
+                logger,
+                i as Number,
+                tests[i][0],
+                tests[i][1]
+            )
+        ) {
+            ok = false;
+        }
+    }
+
+    (new MethodTests()).tests();
+    return ok;
+}}
+
 
 
 ============================================
 Method test
 ============================================
-
-function methodTest1(m as Method(x as Number) as Void or Method(x as String) as Void, p as Number or String) as Void {
-    (m as Method(x as Number) as Void).invoke(p);
+// checking that comments in odd places don't crash
+// the formatter.
+(/*bar*/ :background_app /*baz*/) // boo
+// biz
+module Bar {
+    typedef /* foo */ Foo as Number;
 }
-
 ------
 
 

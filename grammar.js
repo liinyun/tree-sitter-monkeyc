@@ -57,6 +57,8 @@ module.exports = grammar({
     // [$.member_expression, $.type],
     [$.new_expression, $.primary_expression],
     [$.array, $.primary_expression],
+    [$.typed_identifier, $.primary_expression],
+    [$.annotation, $.primary_expression]
     // [$.call_expression, $.type],
 
     // [$.variable_declarator, $.pattern],
@@ -80,6 +82,7 @@ module.exports = grammar({
         // $.primary_expression,
         $.declaration,
         $.statement_block,
+        $.type_alias_statement,
 
         $.if_statement,
         $.switch_statement,
@@ -100,6 +103,7 @@ module.exports = grammar({
         $.function_declaration,
         // $.generator_function_declaration,
         $.class_declaration,
+        $.module_declaration,
         $.variable_declaration,
       ),
 
@@ -112,7 +116,17 @@ module.exports = grammar({
       return token(seq(alpha, repeat(alphanumeric)));
     },
 
-    comment: (_) => token(seq("//", /[^\r\n\u2028\u2029]*/)),
+    // comment: (_) => token(seq("//", /[^\r\n\u2028\u2029]*/)),
+
+    comment: _ => token(choice(
+      seq('//', /[^\r\n\u2028\u2029]*/),
+      seq(
+        '/*',
+        /[^*]*\*+([^/*][^*]*\*+)*/,
+        '/',
+      ),
+    )),
+
 
     //
     // Import statement
@@ -154,7 +168,7 @@ module.exports = grammar({
     dotted_name: ($) => prec(1, sep1($.identifier, ".")),
     // without reserved, it would not parse a.b in If statement
     member_expression: ($) =>
-      prec(
+      prec.left(
         "member",
         seq(
           field("object", $.primary_expression),
@@ -181,6 +195,14 @@ module.exports = grammar({
     //
 
     expression_statement: ($) => seq($.expression, $.empty_statement),
+
+    type_alias_statement: $ => prec(1, seq(
+      'typedef',
+      field('left', $.type),
+      'as',
+      field('right', $.type),
+    )),
+
 
     variable_declaration: ($) =>
       seq(
@@ -317,7 +339,7 @@ module.exports = grammar({
     switch_default: ($) =>
       prec.right(seq("default", ":", field("body", repeat($.statement)))),
 
-    parenthesized_expression: ($) => seq("(", $.expression, ")"),
+    parenthesized_expression: ($) => seq("(", $.expression, optional(seq("as", $.type)), ")"),
 
     //
     // Pattern
@@ -332,7 +354,7 @@ module.exports = grammar({
         prec(1, $.identifier),
         $.type_null,
         $.union_type,
-        $.constrained_type,
+        // $.constrained_type,
         $.member_type,
         $.generic_type,
         $.array_type,
@@ -340,7 +362,7 @@ module.exports = grammar({
       ),
     union_type: ($) => prec.left(seq($.type, "or", $.type)),
     // constrained_type: ($) => prec.right(seq($.type, "as", $.type)),
-    constrained_type: ($) => prec.right(seq($.type, "as", $.type)),
+    // constrained_type: ($) => prec.right(seq($.type, "as", $.type)),
     member_type: ($) => prec.left(seq($.type, ".", $.type)),
 
     array_type: ($) =>
@@ -369,19 +391,19 @@ module.exports = grammar({
         ),
       ),
     type_arguments: ($) => prec.right(seq("<", $.type, ">", optional("?"))),
-    annotation: ($) => seq("(", $.annotation_keywords, ")"),
+    annotation: ($) => seq("(", $.symbol, ")"),
 
-    annotation_keywords: ($) =>
-      choice(
-        ":debug",
-        ":test",
-        ":background",
-        ":glance",
-        ":release",
-        ":typecheck",
-        ":initialized",
-        ":extendedCode",
-      ),
+    // annotation_keywords: ($) =>
+    //   choice(
+    //     ":debug",
+    //     ":test",
+    //     ":background",
+    //     ":glance",
+    //     ":release",
+    //     ":typecheck",
+    //     ":initialized",
+    //     ":extendedCode",
+    //   ),
 
     symbol: ($) => {
       const alpha =
@@ -420,6 +442,7 @@ module.exports = grammar({
     primary_expression: ($) =>
       choice(
         $.identifier,
+        $.typed_identifier,
         $.type_null,
         // $.attribute,
         $.member_expression,
@@ -444,7 +467,7 @@ module.exports = grammar({
       ),
     array_unit: ($) => seq($.expression, optional(seq("as", $.type))),
     // array: ($) => seq("[", commaSep(optional($.expression)), optional(seq("as", $.identifier)), "]"),
-    // typed_identifier: ($) => seq($.identifier, "as", $.type),
+    typed_identifier: ($) => prec.left(seq($.identifier, "as", $.type)),
     array: ($) =>
       seq("[", commaSep(optional(choice($.array_unit, $.array))), "]"),
     return_type: ($) => choice($.identifier, seq($.identifier, "?")),
@@ -460,6 +483,8 @@ module.exports = grammar({
 
     pair: ($) =>
       seq(field("key", $.expression), "=>", field("value", $.expression)),
+
+    module_declaration: ($) => seq(optional($.annotation), "module", $.identifier, $.statement_block),
 
     class_declaration: ($) =>
       prec(

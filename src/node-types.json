@@ -12,6 +12,10 @@
         "named": true
       },
       {
+        "type": "module_declaration",
+        "named": true
+      },
+      {
         "type": "variable_declaration",
         "named": true
       }
@@ -130,6 +134,10 @@
       {
         "type": "typed_array",
         "named": true
+      },
+      {
+        "type": "typed_identifier",
+        "named": true
       }
     ]
   },
@@ -194,6 +202,10 @@
         "named": true
       },
       {
+        "type": "type_alias_statement",
+        "named": true
+      },
+      {
         "type": "using_statement",
         "named": true
       },
@@ -212,16 +224,11 @@
       "required": true,
       "types": [
         {
-          "type": "annotation_keywords",
+          "type": "symbol",
           "named": true
         }
       ]
     }
-  },
-  {
-    "type": "annotation_keywords",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "arguments",
@@ -722,21 +729,6 @@
     }
   },
   {
-    "type": "constrained_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "type",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "continue_statement",
     "named": true,
     "fields": {}
@@ -1224,6 +1216,29 @@
     "fields": {}
   },
   {
+    "type": "module_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "statement_block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "new_expression",
     "named": true,
     "fields": {
@@ -1299,11 +1314,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "type",
           "named": true
         }
       ]
@@ -1605,10 +1624,6 @@
           "named": true
         },
         {
-          "type": "constrained_type",
-          "named": true
-        },
-        {
           "type": "generic_type",
           "named": true
         },
@@ -1633,6 +1648,32 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "type_alias_statement",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1671,6 +1712,25 @@
       "types": [
         {
           "type": "array",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "typed_identifier",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "type",
           "named": true
         }
       ]
@@ -1990,38 +2050,6 @@
     "named": false
   },
   {
-    "type": ":background",
-    "named": false
-  },
-  {
-    "type": ":debug",
-    "named": false
-  },
-  {
-    "type": ":extendedCode",
-    "named": false
-  },
-  {
-    "type": ":glance",
-    "named": false
-  },
-  {
-    "type": ":initialized",
-    "named": false
-  },
-  {
-    "type": ":release",
-    "named": false
-  },
-  {
-    "type": ":test",
-    "named": false
-  },
-  {
-    "type": ":typecheck",
-    "named": false
-  },
-  {
     "type": ";",
     "named": false
   },
@@ -2187,6 +2215,10 @@
     "named": false
   },
   {
+    "type": "module",
+    "named": false
+  },
+  {
     "type": "new",
     "named": false
   },
@@ -2265,6 +2297,10 @@
   {
     "type": "type_null",
     "named": true
+  },
+  {
+    "type": "typedef",
+    "named": false
   },
   {
     "type": "using",

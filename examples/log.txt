@@ -568,15 +568,13 @@
               type: (type [119, 23] - [119, 29]
                 (identifier [119, 23] - [119, 29])))))
         return_type: (type [119, 34] - [119, 61]
-          (constrained_type [119, 34] - [119, 61]
-            (type [119, 34] - [119, 53]
-              (method_function [119, 34] - [119, 53]
-                (formal_parameters [119, 40] - [119, 53]
-                  (parameter [119, 41] - [119, 52]
-                    (typed_parameter [119, 41] - [119, 52]
-                      (identifier [119, 41] - [119, 42])
-                      type: (type [119, 46] - [119, 52]
-                        (identifier [119, 46] - [119, 52])))))))
+          (method_function [119, 34] - [119, 61]
+            (formal_parameters [119, 40] - [119, 53]
+              (parameter [119, 41] - [119, 52]
+                (typed_parameter [119, 41] - [119, 52]
+                  (identifier [119, 41] - [119, 42])
+                  type: (type [119, 46] - [119, 52]
+                    (identifier [119, 46] - [119, 52])))))
             (type [119, 57] - [119, 61]
               (identifier [119, 57] - [119, 61]))))
         body: (statement_block [119, 62] - [122, 5]
@@ -620,29 +618,25 @@
             (typed_parameter [129, 25] - [129, 88]
               (identifier [129, 25] - [129, 26])
               type: (type [129, 30] - [129, 88]
-                (constrained_type [129, 30] - [129, 88]
-                  (type [129, 30] - [129, 49]
-                    (method_function [129, 30] - [129, 49]
+                (union_type [129, 30] - [129, 88]
+                  (type [129, 30] - [129, 57]
+                    (method_function [129, 30] - [129, 57]
                       (formal_parameters [129, 36] - [129, 49]
                         (parameter [129, 37] - [129, 48]
                           (typed_parameter [129, 37] - [129, 48]
                             (identifier [129, 37] - [129, 38])
                             type: (type [129, 42] - [129, 48]
-                              (identifier [129, 42] - [129, 48])))))))
-                  (type [129, 53] - [129, 88]
-                    (constrained_type [129, 53] - [129, 88]
-                      (type [129, 53] - [129, 80]
-                        (union_type [129, 53] - [129, 80]
-                          (type [129, 53] - [129, 57]
-                            (identifier [129, 53] - [129, 57]))
-                          (type [129, 61] - [129, 80]
-                            (method_function [129, 61] - [129, 80]
-                              (formal_parameters [129, 67] - [129, 80]
-                                (parameter [129, 68] - [129, 79]
-                                  (typed_parameter [129, 68] - [129, 79]
-                                    (identifier [129, 68] - [129, 69])
-                                    type: (type [129, 73] - [129, 79]
-                                      (identifier [129, 73] - [129, 79])))))))))
+                              (identifier [129, 42] - [129, 48])))))
+                      (type [129, 53] - [129, 57]
+                        (identifier [129, 53] - [129, 57]))))
+                  (type [129, 61] - [129, 88]
+                    (method_function [129, 61] - [129, 88]
+                      (formal_parameters [129, 67] - [129, 80]
+                        (parameter [129, 68] - [129, 79]
+                          (typed_parameter [129, 68] - [129, 79]
+                            (identifier [129, 68] - [129, 69])
+                            type: (type [129, 73] - [129, 79]
+                              (identifier [129, 73] - [129, 79])))))
                       (type [129, 84] - [129, 88]
                         (identifier [129, 84] - [129, 88]))))))))
           (parameter [129, 90] - [129, 111]
@@ -662,19 +656,16 @@
               function: (member_expression [130, 8] - [130, 49]
                 object: (parenthesized_expression [130, 8] - [130, 42]
                   (identifier [130, 9] - [130, 10])
-                  (ERROR [130, 11] - [130, 41]
-                    (type [130, 14] - [130, 41]
-                      (constrained_type [130, 14] - [130, 41]
-                        (type [130, 14] - [130, 33]
-                          (method_function [130, 14] - [130, 33]
-                            (formal_parameters [130, 20] - [130, 33]
-                              (parameter [130, 21] - [130, 32]
-                                (typed_parameter [130, 21] - [130, 32]
-                                  (identifier [130, 21] - [130, 22])
-                                  type: (type [130, 26] - [130, 32]
-                                    (identifier [130, 26] - [130, 32])))))))
-                        (type [130, 37] - [130, 41]
-                          (identifier [130, 37] - [130, 41]))))))
+                  (type [130, 14] - [130, 41]
+                    (method_function [130, 14] - [130, 41]
+                      (formal_parameters [130, 20] - [130, 33]
+                        (parameter [130, 21] - [130, 32]
+                          (typed_parameter [130, 21] - [130, 32]
+                            (identifier [130, 21] - [130, 22])
+                            type: (type [130, 26] - [130, 32]
+                              (identifier [130, 26] - [130, 32])))))
+                      (type [130, 37] - [130, 41]
+                        (identifier [130, 37] - [130, 41])))))
                 property: (property_identifier [130, 43] - [130, 49]))
               arguments: (arguments [130, 49] - [130, 52]
                 (identifier [130, 50] - [130, 51])))
@@ -687,29 +678,25 @@
             (typed_parameter [134, 25] - [134, 88]
               (identifier [134, 25] - [134, 26])
               type: (type [134, 30] - [134, 88]
-                (constrained_type [134, 30] - [134, 88]
-                  (type [134, 30] - [134, 49]
-                    (method_function [134, 30] - [134, 49]
+                (union_type [134, 30] - [134, 88]
+                  (type [134, 30] - [134, 57]
+                    (method_function [134, 30] - [134, 57]
                       (formal_parameters [134, 36] - [134, 49]
                         (parameter [134, 37] - [134, 48]
                           (typed_parameter [134, 37] - [134, 48]
                             (identifier [134, 37] - [134, 38])
                             type: (type [134, 42] - [134, 48]
-                              (identifier [134, 42] - [134, 48])))))))
-                  (type [134, 53] - [134, 88]
-                    (constrained_type [134, 53] - [134, 88]
-                      (type [134, 53] - [134, 80]
-                        (union_type [134, 53] - [134, 80]
-                          (type [134, 53] - [134, 57]
-                            (identifier [134, 53] - [134, 57]))
-                          (type [134, 61] - [134, 80]
-                            (method_function [134, 61] - [134, 80]
-                              (formal_parameters [134, 67] - [134, 80]
-                                (parameter [134, 68] - [134, 79]
-                                  (typed_parameter [134, 68] - [134, 79]
-                                    (identifier [134, 68] - [134, 69])
-                                    type: (type [134, 73] - [134, 79]
-                                      (identifier [134, 73] - [134, 79])))))))))
+                              (identifier [134, 42] - [134, 48])))))
+                      (type [134, 53] - [134, 57]
+                        (identifier [134, 53] - [134, 57]))))
+                  (type [134, 61] - [134, 88]
+                    (method_function [134, 61] - [134, 88]
+                      (formal_parameters [134, 67] - [134, 80]
+                        (parameter [134, 68] - [134, 79]
+                          (typed_parameter [134, 68] - [134, 79]
+                            (identifier [134, 68] - [134, 69])
+                            type: (type [134, 73] - [134, 79]
+                              (identifier [134, 73] - [134, 79])))))
                       (type [134, 84] - [134, 88]
                         (identifier [134, 84] - [134, 88]))))))))
           (parameter [134, 90] - [134, 101]
@@ -797,7 +784,7 @@
             (empty_statement [145, 49] - [145, 50]))))))
   (ERROR [149, 0] - [149, 7]
     (annotation [149, 0] - [149, 7]
-      (annotation_keywords [149, 1] - [149, 6])))
+      (symbol [149, 1] - [149, 6])))
   (function_declaration [150, 0] - [168, 1]
     name: (identifier [150, 9] - [150, 17])
     parameters: (formal_parameters [150, 17] - [150, 35]
@@ -841,32 +828,21 @@
                   function: (identifier [155, 13] - [155, 18])
                   arguments: (arguments [155, 18] - [160, 13]
                     (identifier [156, 16] - [156, 22])
-                    (identifier [157, 16] - [157, 17])
-                    (ERROR [157, 18] - [159, 27]
-                      (ERROR [157, 21] - [158, 28]
-                        (identifier [157, 21] - [157, 27])
-                        (identifier [157, 34] - [157, 38])
-                        (identifier [157, 39] - [157, 46])
-                        (identifier [157, 47] - [157, 54])
-                        (ERROR [157, 54] - [157, 55])
-                        (identifier [157, 55] - [157, 56])
-                        (identifier [157, 57] - [157, 62])
-                        (identifier [157, 63] - [157, 66])
-                        (identifier [157, 67] - [157, 74])
-                        (type [158, 16] - [158, 27]
-                          (array_type [158, 16] - [158, 27]
-                            element: (type [158, 16] - [158, 21]
-                              (identifier [158, 16] - [158, 21]))
-                            dimensions: (dimensions [158, 21] - [158, 27]
-                              (identifier [158, 22] - [158, 23])
-                              (number [158, 25] - [158, 26])))))
-                      (type [159, 16] - [159, 27]
-                        (array_type [159, 16] - [159, 27]
-                          element: (type [159, 16] - [159, 21]
-                            (identifier [159, 16] - [159, 21]))
-                          dimensions: (dimensions [159, 21] - [159, 27]
-                            (identifier [159, 22] - [159, 23])
-                            (number [159, 25] - [159, 26])))))))))
+                    (typed_identifier [157, 16] - [157, 27]
+                      (identifier [157, 16] - [157, 17])
+                      (type [157, 21] - [157, 27]
+                        (identifier [157, 21] - [157, 27])))
+                    (comment [157, 28] - [157, 77])
+                    (array_access [158, 16] - [158, 27]
+                      array: (array_access [158, 16] - [158, 24]
+                        array: (identifier [158, 16] - [158, 21])
+                        index: (identifier [158, 22] - [158, 23]))
+                      index: (number [158, 25] - [158, 26]))
+                    (array_access [159, 16] - [159, 27]
+                      array: (array_access [159, 16] - [159, 24]
+                        array: (identifier [159, 16] - [159, 21])
+                        index: (identifier [159, 22] - [159, 23]))
+                      index: (number [159, 25] - [159, 26]))))))
             consequence: (statement_block [161, 10] - [163, 9]
               (expression_statement [162, 12] - [162, 23]
                 (assignment_expression [162, 12] - [162, 22]
@@ -889,31 +865,20 @@
         value: (identifier [167, 11] - [167, 13]))))
   (comment [170, 0] - [170, 51])
   (comment [171, 0] - [171, 17])
-  (ERROR [172, 0] - [176, 1]
-    (ERROR [172, 1] - [172, 3])
-    (binary_expression [172, 3] - [175, 25]
-      left: (binary_expression [172, 3] - [175, 18]
-        left: (binary_expression [172, 3] - [175, 11]
-          left: (binary_expression [172, 3] - [172, 30]
-            left: (binary_expression [172, 3] - [172, 24]
-              left: (binary_expression [172, 3] - [172, 7]
-                left: (identifier [172, 3] - [172, 6])
-                right: (identifier [172, 7] - [172, 7]))
-              right: (symbol [172, 9] - [172, 24]))
-            (ERROR [172, 26] - [172, 27])
-            right: (identifier [172, 27] - [172, 30]))
-          (ERROR [172, 31] - [172, 33])
-          (comment [172, 34] - [172, 40])
-          (comment [173, 0] - [173, 6])
-          (ERROR [174, 0] - [174, 12]
-            (pattern [174, 0] - [174, 6]
-              (identifier [174, 0] - [174, 6]))
-            (identifier [174, 7] - [174, 10]))
-          right: (identifier [175, 4] - [175, 11]))
-        (ERROR [175, 13] - [175, 14])
-        right: (identifier [175, 15] - [175, 18]))
-      (ERROR [175, 20] - [175, 21])
-      right: (identifier [175, 22] - [175, 25]))
-    (type [175, 29] - [175, 35]
-      (identifier [175, 29] - [175, 35]))))
-examples/test-casesApp.mc	Parse:    0.93 ms	  4859 bytes/ms	(ERROR [130, 11] - [130, 41])
+  (module_declaration [172, 0] - [176, 1]
+    (annotation [172, 0] - [172, 33]
+      (comment [172, 1] - [172, 8])
+      (symbol [172, 9] - [172, 24])
+      (comment [172, 25] - [172, 32]))
+    (comment [172, 34] - [172, 40])
+    (comment [173, 0] - [173, 6])
+    (identifier [174, 7] - [174, 10])
+    (statement_block [174, 11] - [176, 1]
+      (type_alias_statement [175, 4] - [175, 35]
+        (comment [175, 12] - [175, 21])
+        left: (type [175, 22] - [175, 25]
+          (identifier [175, 22] - [175, 25]))
+        right: (type [175, 29] - [175, 35]
+          (identifier [175, 29] - [175, 35])))
+      (empty_statement [175, 35] - [175, 36]))))
+.\examples\test-casesApp.mc	Parse:    0.76 ms	  5947 bytes/ms	(ERROR [149, 0] - [149, 7])
